@@ -2,7 +2,7 @@
 mod tests {
     use crate::error::ParseError;
     use crate::helper::SerializeHelper;
-    use crate::map;
+    use crate::{map, r#box};
     use crate::serializer::Serialize;
     use crate::values::Values;
 
@@ -50,7 +50,7 @@ mod tests {
     impl Serialize for A {
         fn serialize(self) -> Values {
             let first = Values::Number("a".into(), self.a as f64);
-            let second = Values::Object("s".into(), Box::new(self.s.serialize()));
+            let second = Values::Object("s".into(), r#box!(self.s.serialize()));
             Values::Struct(map!(("a".into(), first), ("s".into(), second)))
         }
     }
