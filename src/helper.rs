@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::values::Values;
 
-trait SerializeHelper<T> {
+pub trait SerializeHelper<T> {
     fn get_unchecked(&self, attr: String, fun: fn(&Values) -> Option<T>) -> T;
     fn get_optional(&self, attr: String, fun: fn(&Values) -> Option<T>) -> Option<T>;
 
