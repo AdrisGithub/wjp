@@ -2,7 +2,11 @@
 name = "wjp"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+authors = ["Adriiii"]
+description = "Wizards JSON Parser"
+readme = "README.md"
+repository = "https://github.com/AdrisGithub/wjp"
+license = "GPL-2.0-or-later"
+documentation = "https://docs.rs/wjp"
 
 [dependencies]
