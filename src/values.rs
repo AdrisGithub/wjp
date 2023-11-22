@@ -6,7 +6,6 @@ pub const STRUCT: &str = "struct";
 pub const NUMBER: &str = "number";
 pub const NONE: &str = "none";
 
-
 #[derive(Debug, Clone)]
 pub enum Values {
     String(String, String),
@@ -59,7 +58,7 @@ impl Values {
             Values::Number(_, _) => NUMBER,
             Values::Object(_, _) => OBJECT,
             Values::Struct(_) => STRUCT,
-            Values::None => NONE
+            Values::None => NONE,
         }
     }
     pub fn is_none(&self) -> bool {
