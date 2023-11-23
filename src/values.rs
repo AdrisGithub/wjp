@@ -78,3 +78,27 @@ impl Values {
         self.get_type_as_string().eq(STRUCT)
     }
 }
+
+impl Display for Values {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Values::String(string) => write!(f, "\"{}\"", string),
+            Values::Number(number) => write!(f, "{}", number),
+            Values::Object(val) => write!(f, "{}",val),
+            Values::Struct(r#struct) => {
+                write!(f, "{{")?;
+                let mut first = true;
+                for (key, val) in r#struct.iter() {
+                    if first {
+                        write!(f, "\"{}\":{}", key, val)?;
+                        first = false;
+                    } else {
+                        write!(f, ",\"{}\":{}", key, val)?
+                    }
+                }
+                write!(f, "}}")
+            }
+            Values::None => write!(f, "null")
+        }
+    }
+}

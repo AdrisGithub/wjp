@@ -74,7 +74,9 @@ mod tests {
 
         println!("Object: {:?}",&s);
         let map = s.serialize();
-        println!("{:?}", map);
+        println!("Abstraktion: {:?}", map);
+        println!("JSON: {}",map);
+        println!();
         let back_s = S::try_from(&map).unwrap();
         println!("{:?}", back_s);
         println!("{}", back_s.a);
@@ -87,7 +89,8 @@ mod tests {
             },
         };
         let map_two = a.serialize();
-        println!("{:?}", map_two);
-        println!("{:?}", A::try_from(&map_two));
+        println!("Abstraktion: {:?}", map_two);
+        println!("Json: {}", map_two);
+        println!("Object: {:?}", A::try_from(&map_two).unwrap());
     }
 }
