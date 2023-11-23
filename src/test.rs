@@ -1,8 +1,8 @@
 #[cfg(test)]
 mod tests {
+    use crate::{map, r#box};
     use crate::error::ParseError;
     use crate::helper::SerializeHelper;
-    use crate::{map, r#box};
     use crate::serializer::Serialize;
     use crate::values::Values;
 
@@ -72,10 +72,10 @@ mod tests {
             b: "ich habs".into(),
         };
 
-        println!("Object: {:?}",&s);
+        println!("Object: {:?}", &s);
         let map = s.serialize();
         println!("Abstraktion: {:?}", map);
-        println!("JSON: {}",map);
+        println!("JSON: {}", map);
         println!();
         let back_s = S::try_from(&map).unwrap();
         println!("{:?}", back_s);
