@@ -5,7 +5,7 @@ pub const STRING: &str = "string";
 pub const OBJECT: &str = "object";
 pub const STRUCT: &str = "struct";
 pub const NUMBER: &str = "number";
-pub const NONE: &str = "none";
+pub const NULL: &str = "null";
 
 #[derive(Debug, Clone)]
 pub enum Values {
@@ -13,7 +13,7 @@ pub enum Values {
     Number(f64),
     Object(Box<Values>),
     Struct(HashMap<String, Values>),
-    None,
+    Null,
 }
 
 impl Values {
@@ -23,7 +23,7 @@ impl Values {
             Values::Number(..) => None,
             Values::Object(val) => Some(*val.clone()),
             Values::Struct(_) => None,
-            Values::None => None,
+            Values::Null => None,
         }
     }
     pub fn get_struct(&self) -> Option<HashMap<String, Values>> {
@@ -32,7 +32,7 @@ impl Values {
             Values::Number(..) => None,
             Values::Object(..) => None,
             Values::Struct(map) => Some(map.clone()),
-            Values::None => None,
+            Values::Null => None,
         }
     }
     pub fn get_string(&self) -> Option<String> {
@@ -41,7 +41,7 @@ impl Values {
             Values::Number(..) => None,
             Values::Object(..) => None,
             Values::Struct(_) => None,
-            Values::None => None,
+            Values::Null => None,
         }
     }
     pub fn get_number(&self) -> Option<f64> {
@@ -50,7 +50,7 @@ impl Values {
             Values::Number(num) => Some(*num),
             Values::Object(..) => None,
             Values::Struct(_) => None,
-            Values::None => None,
+            Values::Null => None,
         }
     }
     pub fn get_type_as_string(&self) -> &str {
@@ -59,11 +59,11 @@ impl Values {
             Values::Number(_) => NUMBER,
             Values::Object(_) => OBJECT,
             Values::Struct(_) => STRUCT,
-            Values::None => NONE,
+            Values::Null => NULL,
         }
     }
-    pub fn is_none(&self) -> bool {
-        self.get_type_as_string().eq(NONE)
+    pub fn is_null(&self) -> bool {
+        self.get_type_as_string().eq(NULL)
     }
     pub fn is_string(&self) -> bool {
         self.get_type_as_string().eq(STRING)
@@ -84,7 +84,7 @@ impl Display for Values {
         match self {
             Values::String(string) => write!(f, "\"{}\"", string),
             Values::Number(number) => write!(f, "{}", number),
-            Values::Object(val) => write!(f, "{}",val),
+            Values::Object(val) => write!(f, "{}", val),
             Values::Struct(r#struct) => {
                 write!(f, "{{")?;
                 let mut first = true;
@@ -98,7 +98,7 @@ impl Display for Values {
                 }
                 write!(f, "}}")
             }
-            Values::None => write!(f, "null")
+            Values::Null => write!(f, "{}", NULL)
         }
     }
 }
