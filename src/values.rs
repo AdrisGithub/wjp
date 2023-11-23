@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::fmt::{Display, Formatter};
 
 pub const STRING: &str = "string";
 pub const OBJECT: &str = "object";
@@ -8,9 +9,9 @@ pub const NONE: &str = "none";
 
 #[derive(Debug, Clone)]
 pub enum Values {
-    String(String, String),
-    Number(String, f64),
-    Object(String, Box<Values>),
+    String(String),
+    Number(f64),
+    Object(Box<Values>),
     Struct(HashMap<String, Values>),
     None,
 }
@@ -20,7 +21,7 @@ impl Values {
         match self {
             Values::String(..) => None,
             Values::Number(..) => None,
-            Values::Object(_, val) => Some(*val.clone()),
+            Values::Object(val) => Some(*val.clone()),
             Values::Struct(_) => None,
             Values::None => None,
         }
@@ -36,7 +37,7 @@ impl Values {
     }
     pub fn get_string(&self) -> Option<String> {
         match self {
-            Values::String(_, string) => Some(string.to_string()),
+            Values::String(string) => Some(string.to_string()),
             Values::Number(..) => None,
             Values::Object(..) => None,
             Values::Struct(_) => None,
@@ -46,7 +47,7 @@ impl Values {
     pub fn get_number(&self) -> Option<f64> {
         match self {
             Values::String(..) => None,
-            Values::Number(_, num) => Some(*num),
+            Values::Number(num) => Some(*num),
             Values::Object(..) => None,
             Values::Struct(_) => None,
             Values::None => None,
@@ -54,9 +55,9 @@ impl Values {
     }
     pub fn get_type_as_string(&self) -> &str {
         match self {
-            Values::String(_, _) => STRING,
-            Values::Number(_, _) => NUMBER,
-            Values::Object(_, _) => OBJECT,
+            Values::String(_) => STRING,
+            Values::Number(_) => NUMBER,
+            Values::Object(_) => OBJECT,
             Values::Struct(_) => STRUCT,
             Values::None => NONE,
         }

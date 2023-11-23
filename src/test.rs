@@ -14,8 +14,8 @@ mod tests {
 
     impl Serialize for S {
         fn serialize(self) -> Values {
-            let first = Values::String("a".into(), self.a);
-            let second = Values::String("b".into(), self.b);
+            let first = Values::String(self.a);
+            let second = Values::String(self.b);
             Values::Struct(map!(("a".into(), first), ("b".into(), second)))
         }
     }
@@ -49,8 +49,8 @@ mod tests {
 
     impl Serialize for A {
         fn serialize(self) -> Values {
-            let first = Values::Number("a".into(), self.a as f64);
-            let second = Values::Object("s".into(), r#box!(self.s.serialize()));
+            let first = Values::Number(self.a as f64);
+            let second = Values::Object(r#box!(self.s.serialize()));
             Values::Struct(map!(("a".into(), first), ("s".into(), second)))
         }
     }
@@ -71,6 +71,8 @@ mod tests {
             a: "Hey Joschka".into(),
             b: "ich habs".into(),
         };
+
+        println!("Object: {:?}",&s);
         let map = s.serialize();
         println!("{:?}", map);
         let back_s = S::try_from(&map).unwrap();
