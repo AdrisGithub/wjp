@@ -10,10 +10,3 @@ macro_rules! map (
         }
     };
 );
-#[macro_export]
-macro_rules! r#box {
-    () => {};
-    ($key:expr) => {
-        Box::from($key)
-    };
-}

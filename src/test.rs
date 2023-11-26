@@ -4,7 +4,7 @@ mod tests {
     use crate::helper::SerializeHelper;
     use crate::serializer::Serialize;
     use crate::values::Values;
-    use crate::{map, r#box};
+    use crate::map;
 
     #[derive(Debug)]
     pub struct S {
@@ -41,8 +41,8 @@ mod tests {
         fn try_from(value: &Values) -> Result<Self, Self::Error> {
             let a = value.get_struct().ok_or(())?;
             let num = a.get_result("a".into(), |v| v.get_number())?;
-            let object = a.get("s").ok_or(())?.get_object().ok_or(())?;
-            let s = S::try_from(&object)?;
+            let object = a.get("s").ok_or(())?;
+            let s = S::try_from(object)?;
             Ok(A { a: num as u32, s })
         }
     }
@@ -50,8 +50,7 @@ mod tests {
     impl Serialize for A {
         fn serialize(self) -> Values {
             let first = Values::Number(self.a as f64);
-            let second = Values::Object(r#box!(self.s.serialize()));
-            Values::Struct(map!(("a".into(), first), ("s".into(), second)))
+            Values::Struct(map!(("a".into(), first), ("s".into(), self.s.serialize())))
         }
     }
 
@@ -117,8 +116,6 @@ mod tests {
             },
         ]);
         println!("{}", mum.serialize());
-
-
 
         let map_two = a.serialize();
         println!("Abstraktion: {:?}", map_two);
