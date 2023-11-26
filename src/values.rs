@@ -111,7 +111,7 @@ impl Display for Values {
             Values::Struct(r#struct) => {
                 write!(f, "{{")?;
                 let mut first = true;
-                for (key, val) in r#struct.iter() {
+                for (key, val) in r#struct {
                     if first {
                         write!(f, "\"{}\":{}", key, val)?;
                         first = false;
@@ -124,7 +124,7 @@ impl Display for Values {
             Values::Array(arr) => {
                 write!(f, "[")?;
                 let mut first = true;
-                for item in arr.iter() {
+                for item in arr {
                     if first {
                         write!(f, "{}", item)?;
                         first = false;
