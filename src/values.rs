@@ -6,6 +6,7 @@ pub const OBJECT: &str = "object";
 pub const STRUCT: &str = "struct";
 pub const NUMBER: &str = "number";
 pub const NULL: &str = "null";
+pub const ARRAY: &str = "array";
 
 #[derive(Debug, Clone)]
 pub enum Values {
@@ -13,6 +14,7 @@ pub enum Values {
     Number(f64),
     Object(Box<Values>),
     Struct(HashMap<String, Values>),
+    Array(Vec<Values>),
     Null,
 }
 
@@ -24,6 +26,7 @@ impl Values {
             Values::Object(val) => Some(*val.clone()),
             Values::Struct(_) => None,
             Values::Null => None,
+            Values::Array(_) => None
         }
     }
     pub fn get_struct(&self) -> Option<HashMap<String, Values>> {
@@ -33,6 +36,7 @@ impl Values {
             Values::Object(..) => None,
             Values::Struct(map) => Some(map.clone()),
             Values::Null => None,
+            Values::Array(_) => None
         }
     }
     pub fn get_string(&self) -> Option<String> {
@@ -42,6 +46,7 @@ impl Values {
             Values::Object(..) => None,
             Values::Struct(_) => None,
             Values::Null => None,
+            Values::Array(_) => None
         }
     }
     pub fn get_number(&self) -> Option<f64> {
@@ -51,7 +56,22 @@ impl Values {
             Values::Object(..) => None,
             Values::Struct(_) => None,
             Values::Null => None,
+            Values::Array(_) => None
         }
+    }
+    pub fn get_list_opt(&self) -> Option<Vec<Values>> {
+        match self {
+            Values::String(_) => None,
+            Values::Number(_) => None,
+            Values::Object(_) => None,
+            Values::Struct(_) => None,
+            Values::Array(arr) => Some(arr.to_vec()),
+            Values::Null => None,
+        }
+    }
+    pub fn get_list(&self) -> Vec<Values> {
+        self.get_list_opt()
+            .unwrap_or_default()
     }
     pub fn get_type_as_string(&self) -> &str {
         match self {
@@ -60,6 +80,7 @@ impl Values {
             Values::Object(_) => OBJECT,
             Values::Struct(_) => STRUCT,
             Values::Null => NULL,
+            Values::Array(_) => ARRAY,
         }
     }
     pub fn is_null(&self) -> bool {
@@ -76,6 +97,9 @@ impl Values {
     }
     pub fn is_struct(&self) -> bool {
         self.get_type_as_string().eq(STRUCT)
+    }
+    pub fn is_array(&self) -> bool {
+        self.get_type_as_string().eq(ARRAY)
     }
 }
 
@@ -98,7 +122,20 @@ impl Display for Values {
                 }
                 write!(f, "}}")
             }
-            Values::Null => write!(f, "{}", NULL)
+            Values::Array(arr) => {
+                write!(f, "[")?;
+                let mut first = true;
+                for item in arr.iter() {
+                    if first {
+                        write!(f, "{}", item)?;
+                        first = false;
+                    } else {
+                        write!(f, "{}", item)?;
+                    }
+                }
+                write!(f, "]")
+            }
+            Values::Null => write!(f, "{}", NULL),
         }
     }
 }
