@@ -1,10 +1,10 @@
 #[cfg(test)]
 mod tests {
-    use crate::{map, r#box};
     use crate::error::ParseError;
     use crate::helper::SerializeHelper;
     use crate::serializer::Serialize;
     use crate::values::Values;
+    use crate::{map, r#box};
 
     #[derive(Debug)]
     pub struct S {
@@ -55,9 +55,21 @@ mod tests {
         }
     }
 
+    impl Serialize for YourMum {
+        fn serialize(self) -> Values {
+            let mut vec = Vec::new();
+            for items in self.0 {
+                vec.push(items.serialize());
+            }
+            Values::Array(vec)
+        }
+    }
+
+    #[derive(Debug)]
+    struct YourMum(Vec<A>);
 
     #[test]
-    fn testone() {
+    fn test_one() {
         let map = map!(("a", 1), ("a", 1));
         println!("{:?}", map.get("a"));
     }
@@ -88,6 +100,26 @@ mod tests {
                 b: "hello".to_string(),
             },
         };
+        let mum = YourMum(vec![
+            A {
+                a: 187,
+                s: S {
+                    a: "hello".to_string(),
+                    b: "hello".to_string(),
+                },
+            },
+            A {
+                a: 19,
+                s: S {
+                    a: "hello".into(),
+                    b: "hello".into(),
+                },
+            },
+        ]);
+        println!("{}", mum.serialize());
+
+
+
         let map_two = a.serialize();
         println!("Abstraktion: {:?}", map_two);
         println!("Json: {}", map_two);

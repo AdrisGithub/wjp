@@ -26,7 +26,7 @@ impl Values {
             Values::Object(val) => Some(*val.clone()),
             Values::Struct(_) => None,
             Values::Null => None,
-            Values::Array(_) => None
+            Values::Array(_) => None,
         }
     }
     pub fn get_struct(&self) -> Option<HashMap<String, Values>> {
@@ -36,7 +36,7 @@ impl Values {
             Values::Object(..) => None,
             Values::Struct(map) => Some(map.clone()),
             Values::Null => None,
-            Values::Array(_) => None
+            Values::Array(_) => None,
         }
     }
     pub fn get_string(&self) -> Option<String> {
@@ -46,7 +46,7 @@ impl Values {
             Values::Object(..) => None,
             Values::Struct(_) => None,
             Values::Null => None,
-            Values::Array(_) => None
+            Values::Array(_) => None,
         }
     }
     pub fn get_number(&self) -> Option<f64> {
@@ -56,7 +56,7 @@ impl Values {
             Values::Object(..) => None,
             Values::Struct(_) => None,
             Values::Null => None,
-            Values::Array(_) => None
+            Values::Array(_) => None,
         }
     }
     pub fn get_list_opt(&self) -> Option<Vec<Values>> {
@@ -70,8 +70,7 @@ impl Values {
         }
     }
     pub fn get_list(&self) -> Vec<Values> {
-        self.get_list_opt()
-            .unwrap_or_default()
+        self.get_list_opt().unwrap_or_default()
     }
     pub fn get_type_as_string(&self) -> &str {
         match self {
@@ -130,7 +129,7 @@ impl Display for Values {
                         write!(f, "{}", item)?;
                         first = false;
                     } else {
-                        write!(f, "{}", item)?;
+                        write!(f, ",{}", item)?;
                     }
                 }
                 write!(f, "]")
