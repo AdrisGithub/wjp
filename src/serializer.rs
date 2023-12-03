@@ -29,6 +29,11 @@ impl<T: Serialize> Serialize for Vec<T> {
         Values::Array(self.iter().map(|e| e.serialize()).collect())
     }
 }
+impl<T: Serialize> Serialize for &[T]{
+    fn serialize(&self) -> Values {
+        Values::Array(self.iter().map(|e| e.serialize()).collect())
+    }
+}
 
 impl<K: ToString, V: Serialize> Serialize for HashMap<K, V> {
     fn serialize(&self) -> Values {
