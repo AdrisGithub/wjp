@@ -1,7 +1,7 @@
-use crate::error::ParseError;
 use std::collections::HashMap;
 use std::str::FromStr;
 
+use crate::error::ParseError;
 use crate::values::Values;
 
 #[macro_use]
@@ -27,15 +27,15 @@ pub(crate) mod macros {
     //
     // Anything else is an error.
     macro_rules! expect_sequence {
-    ($parser:ident, $( $ch:pat ),*) => {
-        $(
-            match expect_byte!($parser) {
-                $ch => {}
-                _   => return $parser.unexpected_character(),
-            }
-        )*
+        ($parser:ident, $( $ch:pat ),*) => {
+            $(
+                match expect_byte!($parser) {
+                    $ch => {}
+                    _   => return $parser.unexpected_character(),
+                }
+            )*
+        }
     }
-}
 
     // A drop in macro for when we expect to read a byte, but we don't care
     // about any whitespace characters that might occur before it.
@@ -80,26 +80,24 @@ pub(crate) mod macros {
     // Expect a particular byte to be next. Also available with a variant
     // creates a `match` expression just to ease some pain.
     macro_rules! expect {
-    ($parser:ident, $byte:expr) => ({
-        let ch = expect_byte_ignore_whitespace!($parser);
+        ($parser:ident, $byte:expr) => ({
+            let ch = expect_byte_ignore_whitespace!($parser);
 
-        if ch != $byte {
-            return $parser.unexpected_character();
-        }
-    });
+            if ch != $byte {
+                return $parser.unexpected_character();
+            }
+        });
 
-    {$parser:ident $(, $byte:pat => $then:expr )*} => ({
-        let ch = expect_byte_ignore_whitespace!($parser);
-
-        match ch {
-            $(
-                $byte => $then,
-            )*
-            _ => return $parser.unexpected_character()
-        }
-
-    })
-}
+        {$parser:ident $(, $byte:pat => $then:expr )*} => ({
+            let ch = expect_byte_ignore_whitespace!($parser);
+            match ch {
+                $(
+                    $byte => $then,
+                )*
+                _ => return $parser.unexpected_character()
+            }
+        })
+    }
 }
 
 pub struct Parser {

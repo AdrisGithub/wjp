@@ -51,7 +51,10 @@ mod tests {
 
     impl Serialize for A {
         fn serialize(&self) -> Values {
-            Values::Struct(map!(("a".into(), self.a.serialize()), ("s".into(), self.s.serialize())))
+            Values::Struct(map!(
+                ("a".into(), self.a.serialize()),
+                ("s".into(), self.s.serialize())
+            ))
         }
     }
 
