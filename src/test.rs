@@ -23,9 +23,9 @@ mod tests {
         }
     }
 
-    impl TryFrom<&Values> for S {
+    impl TryFrom<Values> for S {
         type Error = ParseError;
-        fn try_from(value: &Values) -> Result<Self, Self::Error> {
+        fn try_from(value: Values) -> Result<Self, Self::Error> {
             let s = value.get_struct().ok_or(())?;
             let a = s.get_result("a".into(), |e| e.get_string())?;
             let b = s.get_result("b".into(), |e| e.get_string())?;
@@ -39,21 +39,19 @@ mod tests {
         s: S,
     }
 
-    impl TryFrom<&Values> for A {
+    impl TryFrom<Values> for A {
         type Error = ParseError;
-        fn try_from(value: &Values) -> Result<Self, Self::Error> {
-            let a = value.get_struct().ok_or(())?;
-            let num = a.get_result("a".into(), |v| v.get_number())?;
-            let object = a.get("s").ok_or(())?;
-            let s = S::try_from(object)?;
+        fn try_from(value: Values) -> Result<Self, Self::Error> {
+            let mut a = value.get_struct().ok_or(())?;
+            let num = a.get_result("a", |v| v.get_number())?;
+            let s = a.parse_result("s", |v| S::try_from(v))?;
             Ok(A { a: num, s })
         }
     }
 
     impl Serialize for A {
         fn serialize(&self) -> Values {
-            let first = Values::Number(self.a);
-            Values::Struct(map!(("a".into(), first), ("s".into(), self.s.serialize())))
+            Values::Struct(map!(("a".into(), self.a.serialize()), ("s".into(), self.s.serialize())))
         }
     }
 
@@ -70,15 +68,10 @@ mod tests {
     #[derive(Debug)]
     struct YourMum(Vec<A>);
 
-    impl TryFrom<&Values> for YourMum {
+    impl TryFrom<Values> for YourMum {
         type Error = ParseError;
-        fn try_from(value: &Values) -> Result<Self, Self::Error> {
-            let arr = value.get_list();
-            let mut vec = Vec::new();
-            for item in arr {
-                vec.push(A::try_from(&item)?)
-            }
-            Ok(Self(vec))
+        fn try_from(value: Values) -> Result<Self, Self::Error> {
+            Ok(Self(Vec::try_from(value)?))
         }
     }
 
@@ -103,7 +96,7 @@ mod tests {
         println!("Abstraktion: {:?}", map);
         println!("JSON: {}", map);
         println!();
-        let back_s = S::try_from(&map).unwrap();
+        let back_s = S::try_from(map).unwrap();
         println!("{:?}", back_s);
         println!("{}", back_s.a);
 
@@ -118,7 +111,7 @@ mod tests {
         let map_two = a.serialize();
         println!("Abstraktion: {:?}", map_two);
         println!("Json: {}", map_two);
-        println!("Object: {:?}", A::try_from(&map_two).unwrap());
+        println!("Object: {:?}", A::try_from(map_two).unwrap());
 
         println!("{:?}", f64::from_str("0.1999"));
 

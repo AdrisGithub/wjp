@@ -1,5 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 
+use crate::error::ParseError;
 use crate::values::Values;
 
 pub trait Serialize {
@@ -29,7 +30,8 @@ impl<T: Serialize> Serialize for Vec<T> {
         Values::Array(self.iter().map(|e| e.serialize()).collect())
     }
 }
-impl<T: Serialize> Serialize for &[T]{
+
+impl<T: Serialize> Serialize for &[T] {
     fn serialize(&self) -> Values {
         Values::Array(self.iter().map(|e| e.serialize()).collect())
     }
@@ -50,6 +52,7 @@ impl<I: Serialize> Serialize for HashSet<I> {
         Values::Array(self.iter().map(|val| val.serialize()).collect())
     }
 }
+
 impl<K: ToString, V: Serialize> Serialize for BTreeMap<K, V> {
     fn serialize(&self) -> Values {
         let mut map = HashMap::with_capacity(4);
@@ -65,6 +68,7 @@ impl<I: Serialize> Serialize for BTreeSet<I> {
         Values::Array(self.iter().map(|val| val.serialize()).collect())
     }
 }
+
 impl Serialize for f32 {
     fn serialize(&self) -> Values {
         Values::Number(*self as f64)
@@ -176,5 +180,17 @@ impl Serialize for i64 {
 impl Serialize for i128 {
     fn serialize(&self) -> Values {
         Values::Number(*self as f64)
+    }
+}
+
+impl<T: TryFrom<Values>> TryFrom<Values> for Vec<T> {
+    type Error = ParseError;
+    fn try_from(value: Values) -> Result<Self, Self::Error> {
+        let mut pre = value.get_list_opt().ok_or(ParseError::new())?;
+        let mut post = Vec::with_capacity(pre.len());
+        while !pre.is_empty() {
+            post.push(T::try_from(pre.pop().unwrap()).map_err(|_err| ParseError::new())?)
+        }
+        Ok(post)
     }
 }
