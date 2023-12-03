@@ -17,8 +17,8 @@ mod tests {
 
     impl Serialize for S {
         fn serialize(&self) -> Values {
-            let first = Values::String(self.a.to_string());
-            let second = Values::String(self.b.to_string());
+            let first = self.a.serialize();
+            let second = self.b.serialize();
             Values::Struct(map!(("a".into(), first), ("b".into(), second)))
         }
     }
