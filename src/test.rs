@@ -1,6 +1,7 @@
 #[cfg(test)]
 mod tests {
     use std::str::FromStr;
+    use crate::deserialize::Deserialize;
 
     use crate::error::ParseError;
     use crate::helper::SerializeHelper;
@@ -144,5 +145,6 @@ mod tests {
         println!("{:?}", parser.parse());
         let contents = String::from("{\"ab\":\"c\\\"d\\\"e\"}");
         println!("{:?}", Parser::new(contents.as_str()).parse());
+        let hello = String::from("Hello");
     }
 }
