@@ -16,9 +16,9 @@ mod tests {
     }
 
     impl Serialize for S {
-        fn serialize(self) -> Values {
-            let first = Values::String(self.a);
-            let second = Values::String(self.b);
+        fn serialize(&self) -> Values {
+            let first = Values::String(self.a.to_string());
+            let second = Values::String(self.b.to_string());
             Values::Struct(map!(("a".into(), first), ("b".into(), second)))
         }
     }
@@ -51,16 +51,16 @@ mod tests {
     }
 
     impl Serialize for A {
-        fn serialize(self) -> Values {
+        fn serialize(&self) -> Values {
             let first = Values::Number(self.a);
             Values::Struct(map!(("a".into(), first), ("s".into(), self.s.serialize())))
         }
     }
 
     impl Serialize for YourMum {
-        fn serialize(self) -> Values {
+        fn serialize(&self) -> Values {
             let mut vec = Vec::new();
-            for items in self.0 {
+            for items in &self.0 {
                 vec.push(items.serialize());
             }
             Values::Array(vec)
