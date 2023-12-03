@@ -1,3 +1,4 @@
+use crate::error::ParseError;
 use std::collections::HashMap;
 use std::str::FromStr;
 
@@ -8,7 +9,7 @@ pub(crate) mod macros {
     macro_rules! expect_byte {
         ($parser:ident) => {{
             if $parser.is_eof() {
-                return Err(());
+                return Err(ParseError::new());
             }
 
             let ch = $parser.read_byte();
@@ -115,7 +116,7 @@ pub struct Parser {
 struct StackBlock(Values, String);
 
 impl<'a> Parser {
-    pub fn parse(&mut self) -> Result<Values, ()> {
+    pub fn parse(&mut self) -> Result<Values, ParseError> {
         let mut stack = Vec::with_capacity(3);
         let mut ch = expect_byte_ignore_whitespace!(self);
 
@@ -242,7 +243,7 @@ impl<'a> Parser {
             length: source.len(),
         }
     }
-    fn expect_string(&mut self) -> Result<String, ()> {
+    fn expect_string(&mut self) -> Result<String, ParseError> {
         let mut string = String::new();
         loop {
             let char = self.read_byte();
@@ -308,7 +309,7 @@ impl<'a> Parser {
         self.index = self.index.wrapping_add(1);
     }
 
-    fn unexpected_character<T: Sized>(&mut self) -> Result<T, ()> {
-        Err(())
+    fn unexpected_character<T: Sized>(&mut self) -> Result<T, ParseError> {
+        Err(ParseError::new())
     }
 }
