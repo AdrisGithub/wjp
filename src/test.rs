@@ -1,10 +1,13 @@
 #[cfg(test)]
 mod tests {
+    use std::str::FromStr;
+
     use crate::error::ParseError;
     use crate::helper::SerializeHelper;
+    use crate::map;
+    use crate::parser::Parser;
     use crate::serializer::Serialize;
     use crate::values::Values;
-    use crate::map;
 
     #[derive(Debug)]
     pub struct S {
@@ -32,7 +35,7 @@ mod tests {
 
     #[derive(Debug)]
     pub struct A {
-        a: u32,
+        a: f64,
         s: S,
     }
 
@@ -43,13 +46,13 @@ mod tests {
             let num = a.get_result("a".into(), |v| v.get_number())?;
             let object = a.get("s").ok_or(())?;
             let s = S::try_from(object)?;
-            Ok(A { a: num as u32, s })
+            Ok(A { a: num, s })
         }
     }
 
     impl Serialize for A {
         fn serialize(self) -> Values {
-            let first = Values::Number(self.a as f64);
+            let first = Values::Number(self.a);
             Values::Struct(map!(("a".into(), first), ("s".into(), self.s.serialize())))
         }
     }
@@ -66,6 +69,18 @@ mod tests {
 
     #[derive(Debug)]
     struct YourMum(Vec<A>);
+
+    impl TryFrom<&Values> for YourMum {
+        type Error = ParseError;
+        fn try_from(value: &Values) -> Result<Self, Self::Error> {
+            let arr = value.get_list();
+            let mut vec = Vec::new();
+            for item in arr {
+                vec.push(A::try_from(&item)?)
+            }
+            Ok(Self(vec))
+        }
+    }
 
     #[test]
     fn test_one() {
@@ -93,33 +108,45 @@ mod tests {
         println!("{}", back_s.a);
 
         let a = A {
-            a: 187,
+            a: 187.0,
             s: S {
                 a: "hello".to_string(),
                 b: "hello".to_string(),
             },
         };
-        let mum = YourMum(vec![
-            A {
-                a: 187,
-                s: S {
-                    a: "hello".to_string(),
-                    b: "hello".to_string(),
-                },
-            },
-            A {
-                a: 19,
-                s: S {
-                    a: "hello".into(),
-                    b: "hello".into(),
-                },
-            },
-        ]);
-        println!("{}", mum.serialize());
 
         let map_two = a.serialize();
         println!("Abstraktion: {:?}", map_two);
         println!("Json: {}", map_two);
         println!("Object: {:?}", A::try_from(&map_two).unwrap());
+
+        println!("{:?}", f64::from_str("0.1999"));
+
+        println!();
+        println!();
+        println!();
+
+        let mum = YourMum(vec![
+            A {
+                a: 18.7,
+                s: S {
+                    a: "he\\\"llo".to_string(),
+                    b: "hello".to_string(),
+                },
+            },
+            A {
+                a: 19.098888,
+                s: S {
+                    a: "l".to_string(),
+                    b: "hello".into(),
+                },
+            },
+        ]);
+        let ser_mom = mum.serialize().to_string();
+        println!("{}", ser_mom);
+        let mut parser = Parser::new(ser_mom.as_str());
+        println!("{:?}", parser.parse());
+        let contents = String::from("{\"ab\":\"c\\\"d\\\"e\"}");
+        println!("{:?}", Parser::new(contents.as_str()).parse());
     }
 }
