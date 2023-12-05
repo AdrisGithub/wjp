@@ -1,6 +1,7 @@
 #[cfg(test)]
 mod tests {
     use std::str::FromStr;
+    use crate::deserialize::Deserialize;
 
     use crate::error::ParseError;
     use crate::helper::SerializeHelper;
@@ -19,7 +20,7 @@ mod tests {
         fn serialize(&self) -> Values {
             let first = self.a.serialize();
             let second = self.b.serialize();
-            Values::Struct(map!(("a".into(), first), ("b".into(), second)))
+            Values::Struct(map!(("a", first), ("b", second)))
         }
     }
 
@@ -52,8 +53,8 @@ mod tests {
     impl Serialize for A {
         fn serialize(&self) -> Values {
             Values::Struct(map!(
-                ("a".into(), self.a.serialize()),
-                ("s".into(), self.s.serialize())
+                ("a", self.a.serialize()),
+                ("s", self.s.serialize())
             ))
         }
     }
@@ -140,11 +141,10 @@ mod tests {
         ]);
         let ser_mom = mum.serialize().to_string();
         println!("{}", ser_mom);
-        let mut parser = Parser::new(ser_mom.as_str());
-        println!("{:?}", parser.parse());
+        println!("{:?}", YourMum::deserialize(ser_mom));
         let contents = String::from("{\"ab\":\"c\\\"d\\\"e\"}");
         println!("{:?}", Parser::new(contents.as_str()).parse());
         let hello = String::from("Hello");
-        print!("{}",hello.serialize());
+        print!("{}", hello.serialize());
     }
 }

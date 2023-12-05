@@ -4,7 +4,7 @@ macro_rules! map (
         {
             let mut m = std::collections::HashMap::new();
             $(
-                m.insert($key, $value);
+                m.insert(String::from($key), $value);
              )+
             m
         }
