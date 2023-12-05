@@ -112,6 +112,50 @@ mod tests {
             },
         };
 
+        let b = A {
+            a: 299.0,
+            s,
+        };
+
+        let mum = YourMum(vec![
+            A {
+                a: 18.7,
+                s: S {
+                    a: "he\\\"llo".to_string(),
+                    b: "hello".to_string(),
+                },
+            },
+            A {
+                a: 19.098888,
+                s: S {
+                    a: "l".to_string(),
+                    b: "hello".into(),
+                },
+            },
+            A {
+                a: 19.098888,
+                s: S {
+                    a: "l".to_string(),
+                    b: "hello".into(),
+                },
+            },
+            A {
+                a: 19.098888,
+                s: S {
+                    a: "l".to_string(),
+                    b: "hello".into(),
+                },
+            },
+            A {
+                a: 19.098888,
+                s: S {
+                    a: "l".to_string(),
+                    b: "hello".into(),
+                },
+            },
+            b,
+        ]);
+        println!("{}", mum.serialize());
         let map_two = a.serialize();
         println!("Abstraktion: {:?}", map_two);
         println!("Json: {}", map_two);
