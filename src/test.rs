@@ -1,7 +1,6 @@
 #[cfg(test)]
 mod tests {
     use std::str::FromStr;
-    use crate::deserialize::Deserialize;
 
     use crate::error::ParseError;
     use crate::helper::SerializeHelper;
@@ -28,8 +27,8 @@ mod tests {
         type Error = ParseError;
         fn try_from(value: Values) -> Result<Self, Self::Error> {
             let s = value.get_struct().ok_or(())?;
-            let a = s.get_result("a".into(), |e| e.get_string())?;
-            let b = s.get_result("b".into(), |e| e.get_string())?;
+            let a = s.get_result("a", |e| e.get_string())?;
+            let b = s.get_result("b", |e| e.get_string())?;
             Ok(S { a, b })
         }
     }
@@ -45,7 +44,7 @@ mod tests {
         fn try_from(value: Values) -> Result<Self, Self::Error> {
             let mut a = value.get_struct().ok_or(())?;
             let num = a.get_result("a", |v| v.get_number())?;
-            let s = a.parse_result("s", |v| S::try_from(v))?;
+            let s = a.parse_result("s", S::try_from)?;
             Ok(A { a: num, s })
         }
     }
@@ -146,5 +145,6 @@ mod tests {
         let contents = String::from("{\"ab\":\"c\\\"d\\\"e\"}");
         println!("{:?}", Parser::new(contents.as_str()).parse());
         let hello = String::from("Hello");
+        print!("{}",hello.serialize());
     }
 }
