@@ -4,10 +4,21 @@ use crate::values::Values;
 
 pub trait Deserialize: TryFrom<Values, Error=ParseError> {
     fn deserialize(str: String) -> Result<Self, ParseError> {
-        Parser::new(str.as_str())
+        Self::deserialize_str(str.as_str())
+    }
+    fn deserialize_str(str: &str) -> Result<Self, ParseError> {
+        Parser::new(str)
             .parse()
-            .map(|val| Self::try_from(val))?
+            .map(Self::try_from)?
     }
 }
 
-impl<T: TryFrom<Values, Error=ParseError>> Deserialize for T {}
+impl<T> Deserialize for T where T: TryFrom<Values, Error=ParseError> {}
+
+
+#[cfg(test)]
+mod tests {
+
+    #[test]
+    pub fn test() {}
+}
