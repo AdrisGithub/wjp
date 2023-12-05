@@ -1,8 +1,8 @@
 #[cfg(test)]
 mod tests {
     use std::str::FromStr;
-    use crate::deserialize::Deserialize;
 
+    use crate::deserialize::Deserialize;
     use crate::error::ParseError;
     use crate::helper::SerializeHelper;
     use crate::map;
