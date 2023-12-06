@@ -18,6 +18,22 @@ pub enum Values {
     Boolean(bool),
 }
 
+impl PartialEq<Self> for Values {
+    fn eq(&self, other: &Self) -> bool {
+        match (self,other) {
+            (&Values::Null,&Values::Null) => true,
+            (&Values::String(ref a), &Values::String(ref b)) => a == b,
+            (&Values::Number(ref a), &Values::String(ref b))
+            |(&Values::String(ref b), &Values::Number(ref a)) => a.to_string() == b.to_string(),
+            (&Values::Number(ref a), &Values::Number(ref b)) => a == b,
+            (&Values::Boolean(ref a), &Values::Boolean(ref b)) => a == b,
+            (&Values::Struct(ref a), &Values::Struct(ref b)) => a == b,
+            (&Values::Array(ref a), &Values::Array(ref b)) => a == b,
+            _ => false
+        }
+    }
+}
+
 impl Values {
     pub fn get_struct(&self) -> Option<HashMap<String, Values>> {
         match self {
@@ -117,4 +133,16 @@ impl Display for Values {
             Values::Boolean(bool) => write!(f, "{}", bool),
         }
     }
+}
+#[cfg(test)]
+mod tests{
+    use crate::values::Values;
+
+    #[test]
+    pub fn display_on_bool(){
+        let bool = Values::Boolean(true);
+        assert!(bool,"Hello");
+    }
+
+
 }
