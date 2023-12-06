@@ -20,15 +20,15 @@ pub enum Values {
 
 impl PartialEq<Self> for Values {
     fn eq(&self, other: &Self) -> bool {
-        match (self,other) {
-            (&Values::Null,&Values::Null) => true,
-            (&Values::String(ref a), &Values::String(ref b)) => a == b,
-            (&Values::Number(ref a), &Values::String(ref b))
-            |(&Values::String(ref b), &Values::Number(ref a)) => a.to_string() == b.to_string(),
-            (&Values::Number(ref a), &Values::Number(ref b)) => a == b,
-            (&Values::Boolean(ref a), &Values::Boolean(ref b)) => a == b,
-            (&Values::Struct(ref a), &Values::Struct(ref b)) => a == b,
-            (&Values::Array(ref a), &Values::Array(ref b)) => a == b,
+        match (self, other) {
+            (&Values::Null, &Values::Null) => true,
+            (Values::String(a), Values::String(b)) => a == b,
+            (&Values::Number(a), &Values::String(ref b))
+            | (&Values::String(ref b), &Values::Number(a)) => a.to_string() == *b,
+            (Values::Number(a), Values::Number(b)) => a == b,
+            (Values::Boolean(a), Values::Boolean(b)) => a == b,
+            (Values::Struct(a), Values::Struct(b)) => a == b,
+            (Values::Array(a), Values::Array(b)) => a == b,
             _ => false
         }
     }
@@ -134,15 +134,14 @@ impl Display for Values {
         }
     }
 }
+
 #[cfg(test)]
-mod tests{
+mod tests {
     use crate::values::Values;
 
     #[test]
-    pub fn display_on_bool(){
+    pub fn display_on_bool() {
         let bool = Values::Boolean(true);
-        assert!(bool,"Hello");
+        assert!(bool, "Hello");
     }
-
-
 }
