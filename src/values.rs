@@ -137,11 +137,84 @@ impl Display for Values {
 
 #[cfg(test)]
 mod tests {
+    use crate::map;
+    use crate::serializer::Serialize;
     use crate::values::Values;
 
     #[test]
-    pub fn display_on_bool() {
+    pub fn display_on_bool_true() {
         let bool = Values::Boolean(true);
-        assert!(bool, "Hello");
+        assert_eq!(bool.to_string(), "true")
+    }
+
+    #[test]
+    pub fn display_on_bool_false() {
+        let bool = Values::Boolean(false);
+        assert_eq!(bool.to_string(), "false")
+    }
+
+    #[test]
+    pub fn display_on_null() {
+        let null = Values::Null;
+        assert_eq!(null.to_string(), "null")
+    }
+
+    #[test]
+    pub fn display_on_arr() {
+        let arr = vec![Values::Null, Values::Null];
+        let null = Values::Array(arr);
+        assert_eq!(null.to_string(), "[null,null]")
+    }
+
+    #[test]
+    pub fn display_on_num() {
+        let num = Values::Number(1.56);
+        assert_eq!(num.to_string(), "1.56")
+    }
+
+    #[test]
+    pub fn display_on_string() {
+        let num = Values::String(String::from("TEST TEST TEST"));
+        assert_eq!(num.to_string(), "\"TEST TEST TEST\"")
+    }
+
+    #[test]
+    pub fn display_on_struct() {
+        struct Hello {
+            hello: String,
+        }
+        impl Serialize for Hello {
+            fn serialize(&self) -> Values {
+                Values::Struct(map!(("hello",self.hello.serialize())))
+            }
+        }
+        let struc = Hello { hello: String::from("Moin") }.serialize();
+        assert_eq!(struc.to_string(), "{\"hello\":\"Moin\"}");
+    }
+    #[test]
+    pub fn display_on_arr_with_struct() {
+        struct Hello {
+            hello: String,
+        }
+        impl Serialize for Hello {
+            fn serialize(&self) -> Values {
+                Values::Struct(map!(("hello",self.hello.serialize())))
+            }
+        }
+        let arr = vec![
+            Hello {
+                hello: String::from("Moin"),
+            },
+            Hello {
+                hello: String::from("IDK"),
+            },
+            Hello {
+                hello: String::from("Hello"),
+            },
+        ];
+        assert_eq!(
+            arr.serialize().to_string(),
+            "[{\"hello\":\"Moin\"},{\"hello\":\"IDK\"},{\"hello\":\"Hello\"}]"
+        );
     }
 }
