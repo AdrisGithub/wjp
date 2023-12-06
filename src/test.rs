@@ -45,7 +45,7 @@ mod tests {
         fn try_from(value: Values) -> Result<Self, Self::Error> {
             let mut a = value.get_struct().ok_or(())?;
             let num = a.get_result("a", |v| v.get_number())?;
-            let s = a.parse_result("s", S::try_from)?;
+            let s = a.map_result("s", S::try_from)?;
             Ok(A { a: num, s })
         }
     }

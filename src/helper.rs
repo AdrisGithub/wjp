@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-
 use crate::error::ParseError;
 use crate::values::Values;
 
@@ -8,16 +7,17 @@ pub trait SerializeHelper<T> {
     fn get_optional(&self, attr: &str, fun: fn(&Values) -> Option<T>) -> Option<T>;
     fn get_result(&self, attr: &str, fun: fn(&Values) -> Option<T>) -> Result<T, ParseError>;
     fn rm_result(&mut self, attr: &str, fun: fn(Values) -> Option<T>) -> Result<T, ParseError>;
-    fn parse_result(
+    fn map_result(
         &mut self,
         attr: &str,
         fun: fn(Values) -> Result<T, ParseError>,
     ) -> Result<T, ParseError>;
-    fn parse_ref_result(
+    fn map_ref_result(
         &mut self,
         attr: &str,
         fun: fn(&Values) -> Result<T, ParseError>,
     ) -> Result<T, ParseError>;
+    fn parse_result<A: TryFrom<Values, Error=ParseError>>(&mut self, attr: &str) -> Result<A, ParseError>;
 }
 
 impl<T> SerializeHelper<T> for HashMap<String, Values> {
@@ -39,7 +39,7 @@ impl<T> SerializeHelper<T> for HashMap<String, Values> {
             .ok_or(ParseError::new())?
             .ok_or(ParseError::new())
     }
-    fn parse_result(
+    fn map_result(
         &mut self,
         attr: &str,
         fun: fn(Values) -> Result<T, ParseError>,
@@ -48,13 +48,18 @@ impl<T> SerializeHelper<T> for HashMap<String, Values> {
             .map(fun)
             .ok_or(ParseError::new())?
     }
-    fn parse_ref_result(
+    fn map_ref_result(
         &mut self,
         attr: &str,
         fun: fn(&Values) -> Result<T, ParseError>,
     ) -> Result<T, ParseError> {
         self.get(&String::from(attr))
             .map(fun)
+            .ok_or(ParseError::new())?
+    }
+    fn parse_result<A: TryFrom<Values, Error=ParseError>>(&mut self, attr: &str) -> Result<A, ParseError> {
+        self.remove(&String::from(attr))
+            .map(A::try_from)
             .ok_or(ParseError::new())?
     }
 }
