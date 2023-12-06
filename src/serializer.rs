@@ -1,7 +1,9 @@
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
+use std::hash::Hash;
 use std::isize;
 use std::str::FromStr;
 
+use crate::deserialize::Deserialize;
 use crate::error::ParseError;
 use crate::values::Values;
 
@@ -328,5 +330,57 @@ impl TryFrom<Values> for bool {
     fn try_from(value: Values) -> Result<Self, Self::Error> {
         value.get_bool()
             .ok_or(ParseError::new())
+    }
+}
+
+impl<K, V> TryFrom<Values> for HashMap<K, V> where
+    K: TryFrom<Values, Error=ParseError> + Eq + Hash,
+    V: TryFrom<Values, Error=ParseError> {
+    type Error = ParseError;
+    fn try_from(value: Values) -> Result<Self, Self::Error> {
+        let mut map = HashMap::new();
+        for (key, value) in value.get_struct().ok_or(ParseError::new())? {
+            map.insert(Deserialize::deserialize(key)?, V::try_from(value)?);
+        }
+        Ok(map)
+    }
+}
+
+impl<K, V> TryFrom<Values> for BTreeMap<K, V> where
+    K: TryFrom<Values, Error=ParseError> + Eq + Hash + Ord,
+    V: TryFrom<Values, Error=ParseError> {
+    type Error = ParseError;
+    fn try_from(value: Values) -> Result<Self, Self::Error> {
+        let mut map = BTreeMap::new();
+        for (key, value) in value.get_struct().ok_or(ParseError::new())? {
+            map.insert(Deserialize::deserialize(key)?, V::try_from(value)?);
+        }
+        Ok(map)
+    }
+}
+
+impl<V> TryFrom<Values> for BTreeSet<V>
+    where V: TryFrom<Values, Error=ParseError> + Ord {
+    type Error = ParseError;
+    fn try_from(value: Values) -> Result<Self, Self::Error> {
+        let val = value.get_list_opt().ok_or(ParseError::new())?;
+        let mut set = BTreeSet::new();
+        for item in val {
+            set.insert(V::try_from(item)?);
+        }
+        Ok(set)
+    }
+}
+
+impl<V> TryFrom<Values> for HashSet<V>
+    where V: TryFrom<Values, Error=ParseError> + Hash + Eq {
+    type Error = ParseError;
+    fn try_from(value: Values) -> Result<Self, Self::Error> {
+        let val = value.get_list_opt().ok_or(ParseError::new())?;
+        let mut set = HashSet::new();
+        for item in val {
+            set.insert(V::try_from(item)?);
+        }
+        Ok(set)
     }
 }
