@@ -181,5 +181,7 @@ mod tests {
         println!("{:?}", Parser::new(contents.as_str()).parse());
         let hello = String::from("Hello");
         print!("{}", hello.serialize());
+
+        println!("{}", f64::from_str("-0").unwrap() == 0_f64);
     }
 }
