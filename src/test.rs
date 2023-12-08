@@ -87,9 +87,6 @@ mod tests {
 
     #[test]
     fn test() {
-        println!();
-        println!();
-
         let s = S {
             a: "Hey Joschka".into(),
             b: "ich habs".into(),
