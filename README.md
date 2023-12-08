@@ -73,6 +73,8 @@ implement `From<Values>` and `Serialize` for each of their Structs they want to 
 ```
 This is supported, but just uses the `f64::from_str()` underneath which should support all these cases 
 
+---
+
 ##### JSON also supports the [UTF-8](https://datatracker.ietf.org/doc/html/rfc3629) Encoding
 
 ```json
