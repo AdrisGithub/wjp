@@ -101,13 +101,8 @@ pub(crate) mod macros {
 }
 
 pub struct Parser {
-    // Byte pointer to the slice above
     byte_ptr: *const u8,
-
-    // Current index
     index: usize,
-
-    // Length of the source
     length: usize,
 }
 
