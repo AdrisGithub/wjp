@@ -393,3 +393,39 @@ where
         Ok(set)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::serializer::Serialize;
+
+    #[test]
+    pub fn test_serialized_option_none() {
+        let none: Option<bool> = None;
+        assert_eq!("null", none.serialize().to_string());
+    }
+    #[test]
+    pub fn test_serialized_option_some() {
+        let some = Some(true);
+        assert_eq!("true", some.serialize().to_string());
+    }
+    #[test]
+    pub fn test_serialized_result_err() {
+        let string: Result<&str, &str> = Err("Hello I am a Error");
+        assert_eq!("\"Hello I am a Error\"", string.serialize().to_string())
+    }
+    #[test]
+    pub fn test_serialized_result_ok() {
+        let num: Result<f64, &str> = Ok(123.22);
+        assert_eq!("123.22", num.serialize().to_string())
+    }
+    #[test]
+    pub fn test_serialized_vec_empty() {
+        let arr: Vec<bool> = vec![];
+        assert_eq!("[]", arr.serialize().to_string())
+    }
+    #[test]
+    pub fn test_serialized_vec_filled() {
+        let arr = vec![true, false, false, false];
+        assert_eq!("[true,false,false,false]", arr.serialize().to_string())
+    }
+}
