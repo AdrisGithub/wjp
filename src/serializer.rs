@@ -396,7 +396,9 @@ where
 
 #[cfg(test)]
 mod tests {
+    use crate::map;
     use crate::serializer::Serialize;
+    use std::collections::HashMap;
 
     #[test]
     pub fn test_serialized_option_none() {
@@ -427,5 +429,15 @@ mod tests {
     pub fn test_serialized_vec_filled() {
         let arr = vec![true, false, false, false];
         assert_eq!("[true,false,false,false]", arr.serialize().to_string())
+    }
+    #[test]
+    pub fn test_serialized_map_empty() {
+        let map: HashMap<String, String> = map!();
+        assert_eq!("{}", map.serialize().to_string())
+    }
+    #[test]
+    pub fn test_serialized_map_filled() {
+        let map = map!(("Hello", true));
+        assert_eq!("{\"Hello\":true}", map.serialize().to_string())
     }
 }
