@@ -29,7 +29,7 @@ impl PartialEq<Self> for Values {
             (Values::Boolean(a), Values::Boolean(b)) => a == b,
             (Values::Struct(a), Values::Struct(b)) => a == b,
             (Values::Array(a), Values::Array(b)) => a == b,
-            _ => false
+            _ => false,
         }
     }
 }
@@ -185,10 +185,13 @@ mod tests {
         }
         impl Serialize for Hello {
             fn serialize(&self) -> Values {
-                Values::Struct(map!(("hello",self.hello.serialize())))
+                Values::Struct(map!(("hello", self.hello.serialize())))
             }
         }
-        let struc = Hello { hello: String::from("Moin") }.serialize();
+        let struc = Hello {
+            hello: String::from("Moin"),
+        }
+        .serialize();
         assert_eq!(struc.to_string(), "{\"hello\":\"Moin\"}");
     }
     #[test]
@@ -198,7 +201,7 @@ mod tests {
         }
         impl Serialize for Hello {
             fn serialize(&self) -> Values {
-                Values::Struct(map!(("hello",self.hello.serialize())))
+                Values::Struct(map!(("hello", self.hello.serialize())))
             }
         }
         let arr = vec![

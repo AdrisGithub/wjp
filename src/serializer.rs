@@ -203,7 +203,8 @@ impl TryFrom<Values> for char {
     type Error = ParseError;
     fn try_from(value: Values) -> Result<Self, Self::Error> {
         String::try_from(value)?
-            .chars().next()
+            .chars()
+            .next()
             .ok_or(ParseError::new())
     }
 }
@@ -218,7 +219,8 @@ impl TryFrom<Values> for String {
 impl TryFrom<Values> for usize {
     type Error = ParseError;
     fn try_from(value: Values) -> Result<Self, Self::Error> {
-        value.get_number()
+        value
+            .get_number()
             .map(|f| f.to_string())
             .map(|s| usize::from_str(s.as_str()))
             .ok_or(ParseError::new())?
@@ -328,14 +330,15 @@ impl TryFrom<Values> for i128 {
 impl TryFrom<Values> for bool {
     type Error = ParseError;
     fn try_from(value: Values) -> Result<Self, Self::Error> {
-        value.get_bool()
-            .ok_or(ParseError::new())
+        value.get_bool().ok_or(ParseError::new())
     }
 }
 
-impl<K, V> TryFrom<Values> for HashMap<K, V> where
-    K: TryFrom<Values, Error=ParseError> + Eq + Hash,
-    V: TryFrom<Values, Error=ParseError> {
+impl<K, V> TryFrom<Values> for HashMap<K, V>
+where
+    K: TryFrom<Values, Error = ParseError> + Eq + Hash,
+    V: TryFrom<Values, Error = ParseError>,
+{
     type Error = ParseError;
     fn try_from(value: Values) -> Result<Self, Self::Error> {
         let mut map = HashMap::new();
@@ -346,9 +349,11 @@ impl<K, V> TryFrom<Values> for HashMap<K, V> where
     }
 }
 
-impl<K, V> TryFrom<Values> for BTreeMap<K, V> where
-    K: TryFrom<Values, Error=ParseError> + Eq + Hash + Ord,
-    V: TryFrom<Values, Error=ParseError> {
+impl<K, V> TryFrom<Values> for BTreeMap<K, V>
+where
+    K: TryFrom<Values, Error = ParseError> + Eq + Hash + Ord,
+    V: TryFrom<Values, Error = ParseError>,
+{
     type Error = ParseError;
     fn try_from(value: Values) -> Result<Self, Self::Error> {
         let mut map = BTreeMap::new();
@@ -360,7 +365,9 @@ impl<K, V> TryFrom<Values> for BTreeMap<K, V> where
 }
 
 impl<V> TryFrom<Values> for BTreeSet<V>
-    where V: TryFrom<Values, Error=ParseError> + Ord {
+where
+    V: TryFrom<Values, Error = ParseError> + Ord,
+{
     type Error = ParseError;
     fn try_from(value: Values) -> Result<Self, Self::Error> {
         let val = value.get_list_opt().ok_or(ParseError::new())?;
@@ -373,7 +380,9 @@ impl<V> TryFrom<Values> for BTreeSet<V>
 }
 
 impl<V> TryFrom<Values> for HashSet<V>
-    where V: TryFrom<Values, Error=ParseError> + Hash + Eq {
+where
+    V: TryFrom<Values, Error = ParseError> + Hash + Eq,
+{
     type Error = ParseError;
     fn try_from(value: Values) -> Result<Self, Self::Error> {
         let val = value.get_list_opt().ok_or(ParseError::new())?;

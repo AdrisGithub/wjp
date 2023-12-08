@@ -52,10 +52,7 @@ mod tests {
 
     impl Serialize for A {
         fn serialize(&self) -> Values {
-            Values::Struct(map!(
-                ("a", self.a.serialize()),
-                ("s", self.s.serialize())
-            ))
+            Values::Struct(map!(("a", self.a.serialize()), ("s", self.s.serialize())))
         }
     }
 
@@ -109,10 +106,7 @@ mod tests {
             },
         };
 
-        let b = A {
-            a: 299.0,
-            s,
-        };
+        let b = A { a: 299.0, s };
 
         let mum = YourMum(vec![
             A {

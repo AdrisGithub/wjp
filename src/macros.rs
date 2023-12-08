@@ -14,19 +14,17 @@ macro_rules! map (
     };
 );
 
-
 #[cfg(test)]
-mod tests{
+mod tests {
     use std::collections::HashMap;
     #[test]
-    pub fn with_empty_params(){
-        assert_eq!(map!(),HashMap::<&str,&str>::new())
+    pub fn with_empty_params() {
+        assert_eq!(map!(), HashMap::<&str, &str>::new())
     }
     #[test]
-    pub fn with_filled_params(){
+    pub fn with_filled_params() {
         let mut map = HashMap::new();
-        map.insert(String::from("test"),123);
-        assert_eq!(map!(("test",123)),map)
+        map.insert(String::from("test"), 123);
+        assert_eq!(map!(("test", 123)), map)
     }
-
 }

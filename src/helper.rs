@@ -1,6 +1,6 @@
-use std::collections::HashMap;
 use crate::error::ParseError;
 use crate::values::Values;
+use std::collections::HashMap;
 
 pub trait SerializeHelper<T> {
     fn get_unchecked(&self, attr: &str, fun: fn(&Values) -> Option<T>) -> T;
@@ -17,7 +17,10 @@ pub trait SerializeHelper<T> {
         attr: &str,
         fun: fn(&Values) -> Result<T, ParseError>,
     ) -> Result<T, ParseError>;
-    fn parse_result<A: TryFrom<Values, Error=ParseError>>(&mut self, attr: &str) -> Result<A, ParseError>;
+    fn parse_result<A: TryFrom<Values, Error = ParseError>>(
+        &mut self,
+        attr: &str,
+    ) -> Result<A, ParseError>;
 }
 
 impl<T> SerializeHelper<T> for HashMap<String, Values> {
@@ -57,7 +60,10 @@ impl<T> SerializeHelper<T> for HashMap<String, Values> {
             .map(fun)
             .ok_or(ParseError::new())?
     }
-    fn parse_result<A: TryFrom<Values, Error=ParseError>>(&mut self, attr: &str) -> Result<A, ParseError> {
+    fn parse_result<A: TryFrom<Values, Error = ParseError>>(
+        &mut self,
+        attr: &str,
+    ) -> Result<A, ParseError> {
         self.remove(&String::from(attr))
             .map(A::try_from)
             .ok_or(ParseError::new())?
