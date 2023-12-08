@@ -73,8 +73,7 @@ implement `From<Values>` and `Serialize` for each of their Structs they want to 
 ```
 This is supported, but just uses the `f64::from_str()` underneath which should support all these cases 
 
-##### JSON also supports the [UTF-8](https://datatracker.ietf.org/doc/html/rfc3629) Encoding, 
-tho this library doesn't support \u escaped characters and doesn't advise on using escaped chars at all
+##### JSON also supports the [UTF-8](https://datatracker.ietf.org/doc/html/rfc3629) Encoding
 
 ```json
 {
@@ -82,3 +81,4 @@ tho this library doesn't support \u escaped characters and doesn't advise on usi
   "info": "  ^ This is not supported "
 }
 ```
+This library doesn't support \u escaped characters and doesn't advise on using escaped chars at all
