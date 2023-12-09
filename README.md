@@ -10,6 +10,60 @@ workable types and vice versa.
 
 * [`wjp`](https://docs.rs/wjp)
 
+## Basic Usage:
+
+```rust
+
+#[derive(Debug)]
+struct Example {
+    code: f32,
+    messages: Vec<String>,
+    opt: Option<bool>,
+}
+
+impl Serialize for Example {
+    fn serialize(&self) -> Values {
+        Values::Struct(map!(
+            ("code", self.code.serialize()),
+            ("messages", self.messages.serialize()),
+            ("opt", self.opt.serialize())
+        ))
+    }
+}
+impl TryFrom<Values> for Example {
+    type Error = ParseError;
+    fn try_from(value: Values) -> Result<Self, Self::Error> {
+        let mut struc = value.get_struct().ok_or(ParseError::new())?;
+        let code = struc.map_val("code", f32::try_from)?;
+        let messages = struc.map_val("messages", Vec::try_from)?;
+        let opt = struc.map_opt_val("opt", |val| val.get_bool())?;
+        Ok(Self {
+            opt,
+            messages,
+            code,
+        })
+    }
+}
+pub fn main() {
+    let example = Example {
+        code: 123.0,
+        messages: vec!["Important".to_string(), "Message".to_string()],
+        opt: None,
+    };
+    let json = example.json();
+    println!("{}", json);
+    let back = Example::deserialize(json);
+    println!("{:?}", back);
+}
+
+```
+
+```text
+{"messages":["Important","Message"],"code":123,"opt":null}
+
+Ok(Example { code: 123.0, messages: ["Message", "Important"], opt: None })
+```
+
 ## Explanation:
 
 [JSON](https://datatracker.ietf.org/doc/html/rfc8259) 
