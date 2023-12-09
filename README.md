@@ -53,8 +53,9 @@ HashMap that allocates Key-Value Pairs every time at a new place and delivers th
 }
 ```
 
-This is supported, but it makes the parsing part more difficult and is the Reason why the User of this library needs to 
-implement `From<Values>` and `Serialize` for each of their Structs they want to parse
+This is supported, but it makes the parsing part more difficult and is the Reason why 
+the User of this library needs to implement `From<Values>` and `Serialize` for each of
+their Structs they want to parse
 
 ---
 
@@ -84,3 +85,20 @@ This is supported, but just uses the `f64::from_str()` underneath which should s
 }
 ```
 This library doesn't support \u escaped characters and doesn't advise on using escaped chars at all
+
+
+---
+
+##### JSON also supports different types inside of Arrays 
+
+```json
+[
+  true,
+  false,
+  null,
+  1.23,
+  false
+]
+```
+This is supported, but the User needs to find out what to do with
+the `Vec<Values>` that can contain different types
