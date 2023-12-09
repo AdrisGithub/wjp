@@ -28,8 +28,8 @@ mod tests {
         type Error = ParseError;
         fn try_from(value: Values) -> Result<Self, Self::Error> {
             let s = value.get_struct().ok_or(())?;
-            let a = s.get_result("a", |e| e.get_string())?;
-            let b = s.get_result("b", |e| e.get_string())?;
+            let a = s.get_val_res("a", |e| e.get_string())?;
+            let b = s.get_val_res("b", |e| e.get_string())?;
             Ok(S { a, b })
         }
     }
@@ -44,8 +44,8 @@ mod tests {
         type Error = ParseError;
         fn try_from(value: Values) -> Result<Self, Self::Error> {
             let mut a = value.get_struct().ok_or(())?;
-            let num = a.get_result("a", |v| v.get_number())?;
-            let s = a.map_result("s", S::try_from)?;
+            let num = a.get_val_res("a", |v| v.get_number())?;
+            let s = a.map_val("s", S::try_from)?;
             Ok(A { a: num, s })
         }
     }
@@ -179,6 +179,6 @@ mod tests {
         let contents = String::from("{\"ab\":\"c\\\"d\\\"e\"}");
         println!("{:?}", Parser::new(contents.as_str()).parse());
         let hello = String::from("Hello");
-        print!("{}", hello.serialize());
+        println!("{}", hello.serialize());
     }
 }
