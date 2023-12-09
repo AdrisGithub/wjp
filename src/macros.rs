@@ -3,7 +3,7 @@
 /// ```rust
 /// use std::collections::HashMap;
 /// use wjp::map;
-/// use wjp::values::Values;
+/// use wjp::Values;
 ///
 /// let mut map = HashMap::new();
 /// map.insert("test".to_string(),Values::Null);
