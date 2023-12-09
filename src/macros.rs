@@ -1,3 +1,21 @@
+/// This macro can be used when implementing the [`Serialize`] Trait
+/// Example:
+/// ```rust
+/// use std::collections::HashMap;
+/// use wjp::map;
+/// use wjp::values::Values;
+///
+/// let mut map = HashMap::new();
+/// map.insert("test".to_string(),Values::Null);
+///
+/// assert_eq!(
+///     map!(("test",Values::Null)),
+///     map
+/// )
+///
+/// ```
+///
+/// [`Serialize`]: crate::serializer::Serialize
 #[macro_export]
 macro_rules! map (
     () => {
