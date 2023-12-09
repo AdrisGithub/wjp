@@ -8,7 +8,7 @@ readme = "README.md"
 repository = "https://github.com/AdrisGithub/wjp"
 license = "GPL-2.0-or-later"
 documentation = "https://docs.rs/wjp"
-exclude = ["src/test.rs", ".github/"]
+exclude = ["src/test.rs", ".github/", "sonar-project.properties"]
 
 
 
