@@ -156,7 +156,6 @@ mod tests {
 
         println!();
         println!();
-        println!();
 
         let mum = YourMum(vec![
             A {
