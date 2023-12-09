@@ -76,7 +76,7 @@ impl<T> SerializeHelper<T> for HashMap<String, Values> {
         self.remove(&String::from(attr))
             .map(fun)
             .ok_or(ParseError::new())?
-            .map_err(|err| ParseError::new())
+            .map_err(|_err| ParseError::new())
     }
     fn map_opt_val(
         &mut self,
