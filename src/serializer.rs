@@ -216,6 +216,19 @@ impl TryFrom<Values> for String {
     }
 }
 
+impl TryFrom<Values> for f32 {
+    type Error = ParseError;
+    fn try_from(value: Values) -> Result<Self, Self::Error> {
+        f64::try_from(value).map(|val| val as f32)
+    }
+}
+impl TryFrom<Values> for f64 {
+    type Error = ParseError;
+    fn try_from(value: Values) -> Result<Self, Self::Error> {
+        value.get_number().ok_or(ParseError::new())
+    }
+}
+
 impl TryFrom<Values> for usize {
     type Error = ParseError;
     fn try_from(value: Values) -> Result<Self, Self::Error> {
@@ -396,9 +409,10 @@ where
 
 #[cfg(test)]
 mod tests {
+    use std::collections::HashMap;
+
     use crate::map;
     use crate::serializer::Serialize;
-    use std::collections::HashMap;
 
     #[test]
     pub fn test_serialized_option_none() {
