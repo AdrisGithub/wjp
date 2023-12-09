@@ -1,10 +1,16 @@
 use std::fmt::{Debug, Error, Formatter};
 
+/// Error Struct that contains different Information's on what went wrong
 pub struct ParseError(String);
 
 impl ParseError {
+    /// constructs a new ParseError with an empty message
     pub const fn new() -> Self {
         Self(String::new())
+    }
+    /// replaces the Error Message with a provided Message
+    pub fn with_msg(&mut self, msg: &str) {
+        self.0 = String::from(msg);
     }
 }
 

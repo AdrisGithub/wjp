@@ -3,17 +3,40 @@ use std::error::Error;
 
 use crate::error::ParseError;
 use crate::values::Values;
-
+/// Helper Trait for Serializing JSON
 pub trait SerializeHelper<T> {
+    /// directly get T without any further checks
+    /// Warning: this operation calls the [`.unwrap()`] method
+    ///
+    /// [`.unwrap()`]: Option::unwrap
     fn get_val_unsafe(&self, attr: &str, fun: fn(&Values) -> Option<T>) -> T;
+    /// get an [`Option<T>`] without the Error message why the operation maybe failed
+    ///
+    /// [`Option<T>`]: Option
     fn get_val_opt(&self, attr: &str, fun: fn(&Values) -> Option<T>) -> Option<T>;
+    /// get a Result of T or [`ParseError`] containing Info why the operation failed.
+    /// In this case the function only takes a referenced [`Values`] object and returns an [`Option<T>`]
+    ///
+    /// [`Option<T>`]: Option
     fn get_val_res(&self, attr: &str, fun: fn(&Values) -> Option<T>) -> Result<T, ParseError>;
+    /// get a Result of T or [`ParseError`] containing Info why the operation failed.
+    /// In this case the function only takes a [`Values`] object and returns an [`Option<T>`]
+    ///
+    /// [`Option<T>`]: Option
     fn rm_val(&mut self, attr: &str, fun: fn(Values) -> Option<T>) -> Result<T, ParseError>;
+    /// get a Result of T or [`ParseError`] containing Info why the operation failed.
+    /// In this case the function only takes a [`Values`] object and returns an [`Result<T,ParseError>`]
+    ///
+    /// [`Result<T,ParseError>`]: Result
     fn map_val(
         &mut self,
         attr: &str,
         fun: fn(Values) -> Result<T, ParseError>,
     ) -> Result<T, ParseError>;
+    /// get a Result of T or [`ParseError`] containing Info why the operation failed.
+    /// In this case the function only takes a referenced [`Values`] object and returns an [`Result<T,ParseError>`]
+    ///
+    /// [`Result<T,ParseError>`]: Result
     fn map_ref_val(
         &mut self,
         attr: &str,
