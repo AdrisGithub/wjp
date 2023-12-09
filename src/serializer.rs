@@ -9,6 +9,10 @@ use crate::values::Values;
 
 pub trait Serialize {
     fn serialize(&self) -> Values;
+
+    fn json(&self) -> String {
+        self.serialize().to_string()
+    }
 }
 
 impl<S: Serialize> Serialize for Option<S> {
