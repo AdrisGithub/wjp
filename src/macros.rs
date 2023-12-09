@@ -1,4 +1,5 @@
 /// This macro can be used when implementing the [`Serialize`] Trait
+///
 /// Example:
 /// ```rust
 /// use std::collections::HashMap;
