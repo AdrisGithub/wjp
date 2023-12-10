@@ -74,9 +74,9 @@ pub fn main() {
 Output of the Example above:
 
 ```text
-{"messages":["Important","Message"],"code":123,"opt":null}
+{"opt":null,"code":123,"messages":["Important","Message"]}
 
-Ok(Example { code: 123.0, messages: ["Message", "Important"], opt: None })
+Ok(Example { code: 123.0, messages: ["Important", "Message"], opt: None })
 ```
 
 ## Explanation:

@@ -182,7 +182,7 @@ impl<'a> Parser {
                     }
 
                     Some(&mut StackBlock(Values::Array(ref mut array), _)) => {
-                        array.push(value);
+                        array.insert(0, value);
 
                         ch = expect_byte_ignore_whitespace!(self);
 
