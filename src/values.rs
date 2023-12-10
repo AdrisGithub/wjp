@@ -7,14 +7,66 @@ pub const NUMBER: &str = "number";
 pub const NULL: &str = "null";
 pub const ARRAY: &str = "array";
 pub const BOOLEAN: &str = "boolean";
-
+/// Different Enums to construct an abstract JSON Hierarchy which is easier to work with and to construct
 #[derive(Debug, Clone)]
 pub enum Values {
+    /// Represents a JSON String
+    /// ```
+    /// use wjp::Values;
+    /// assert_eq!(
+    ///     "\"Hello\"",
+    ///     Values::String(String::from("Hello")).to_string()
+    /// )
+    /// ```
     String(String),
+    /// Represents a JSON Number
+    /// ```
+    /// use wjp::Values;
+    /// assert_eq!(
+    ///     "12.43",
+    ///     Values::Number(12.43).to_string()
+    /// )
+    /// ```
     Number(f64),
+    /// Represents a JSON Struct
+    /// ```
+    /// use wjp::{map, Values};
+    /// assert_eq!(
+    ///     Values::Struct(map!(("message",Values::Null))).to_string(),
+    ///     "{\"message\":null}"
+    /// )
+    /// ```
     Struct(HashMap<String, Values>),
+    /// Represents a JSON Array
+    /// ```
+    /// use wjp::Values;
+    /// assert_eq!(
+    ///     Values::Array(vec![Values::Null,Values::Boolean(true)]).to_string(),
+    ///     "[null,true]"
+    /// )
+    /// ```
     Array(Vec<Values>),
+    /// Represents the JSON Value "null"
+    /// ```
+    /// use wjp::Values;
+    /// assert_eq!(
+    ///     Values::Null.to_string(),
+    ///     "null"
+    /// );
+    /// ```
     Null,
+    /// Represents the JSON Value "true" or "false"
+    /// ```
+    /// use wjp::Values;
+    /// assert_eq!(
+    ///     Values::Boolean(true).to_string(),
+    ///     "true"  
+    /// );
+    /// assert_eq!(
+    ///     Values::Boolean(false).to_string(),
+    ///     "false"  
+    /// )
+    /// ```
     Boolean(bool),
 }
 
@@ -35,6 +87,11 @@ impl PartialEq<Self> for Values {
 }
 
 impl Values {
+    /// if the provided value is a [`Struct`] it will return [`Some`]
+    /// containing the inner [`Hashmap`] otherwise returns [`None`]
+    ///
+    /// [`Struct`]: Values::Struct
+    /// [`Hashmap`]: HashMap
     pub fn get_struct(&self) -> Option<HashMap<String, Values>> {
         match self {
             Values::Struct(map) => Some(map.clone()),
