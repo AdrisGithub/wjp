@@ -3,7 +3,7 @@
 A library to parse raw Strings into 
 workable types and vice versa.
 
-[![Latest version](https://img.shields.io/badge/crates.io-1.0.0-red)](https://crates.io/crates/wjp)
+[![Latest version](https://img.shields.io/badge/crates.io-1.0.1-red)](https://crates.io/crates/wjp)
 [![Documentation](https://docs.rs/log/badge.svg)](https://docs.rs/wjp)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=AdrisGithub_wjp&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=AdrisGithub_wjp)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=AdrisGithub_wjp&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=AdrisGithub_wjp)
@@ -13,6 +13,13 @@ workable types and vice versa.
 * [`wjp`](https://docs.rs/wjp)
 
 ## Basic Usage:
+
+Import the library into your Cargo.toml
+
+```toml
+[dependencies]
+wjp = "1.0.1"
+```
 
 ```rust
 
