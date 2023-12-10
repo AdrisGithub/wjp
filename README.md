@@ -5,7 +5,9 @@ workable types and vice versa.
 
 [![Latest version](https://img.shields.io/badge/crates.io-1.0.0-red)](https://crates.io/crates/wjp)
 [![Documentation](https://docs.rs/log/badge.svg)](https://docs.rs/wjp)
-
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=AdrisGithub_wjp&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=AdrisGithub_wjp)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=AdrisGithub_wjp&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=AdrisGithub_wjp)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=AdrisGithub_wjp&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=AdrisGithub_wjp)
 ## Documentation:
 
 * [`wjp`](https://docs.rs/wjp)
