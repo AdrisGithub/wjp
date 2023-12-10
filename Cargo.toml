@@ -10,6 +10,4 @@ license = "GPL-2.0-or-later"
 documentation = "https://docs.rs/wjp"
 exclude = ["src/test.rs", ".github/", "sonar-project.properties"]
 
-
-
 [dependencies]
