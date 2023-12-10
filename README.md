@@ -3,7 +3,7 @@
 A library to parse raw Strings into 
 workable types and vice versa.
 
-[![Latest version](https://img.shields.io/badge/crates.io-0.1.1-red)](https://crates.io/crates/wjp)
+[![Latest version](https://img.shields.io/badge/crates.io-1.0.0-red)](https://crates.io/crates/wjp)
 [![Documentation](https://docs.rs/log/badge.svg)](https://docs.rs/wjp)
 
 ## Documentation:
