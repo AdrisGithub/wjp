@@ -42,11 +42,20 @@ pub trait SerializeHelper<T> {
         attr: &str,
         fun: fn(&Values) -> Result<T, ParseError>,
     ) -> Result<T, ParseError>;
+    /// get a Result of T or [`ParseError`] containing Info why the operation failed.
+    /// In this case the function only takes a referenced [`Values`] object and returns an [`Result<T,E>`]
+    ///
+    /// [`Result<T,E>`]: Result
     fn map_val_and_err<E: Error>(
         &mut self,
         attr: &str,
         fun: fn(Values) -> Result<T, E>,
     ) -> Result<T, ParseError>;
+    /// get a Result of [`Option<T>`] or [`ParseError`] containing Info why the operation failed.
+    /// In this case the function only takes a referenced [`Values`] object and returns an [`Result<T,ParseError>`]
+    ///
+    /// [`Result<T,ParseError>`]: Result
+    /// [`Option<T>`]: Option
     fn map_opt_val(
         &mut self,
         attr: &str,
