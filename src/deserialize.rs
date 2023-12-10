@@ -7,8 +7,16 @@ use crate::values::Values;
 /// and is used to deserialize JSON strings.
 ///
 /// Usage:
-/// ```rust
-/// use wjp::Deserialize;
+/// ```rust;
+/// use wjp::{Deserialize, ParseError, Values};
+///
+/// impl TryFrom<Values> for bool {
+///     type Error = ParseError;
+///     fn try_from(value: Values) -> Result<Self, Self::Error> {
+///         value.get_bool().ok_or(ParseError::new())
+///     }
+/// }
+///
 /// let boolean = "true";
 /// let parsed = bool::deserialize_str(boolean).unwrap();
 /// assert_eq!(parsed,true);

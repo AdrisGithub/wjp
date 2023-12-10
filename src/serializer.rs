@@ -6,10 +6,37 @@ use std::str::FromStr;
 use crate::deserialize::Deserialize;
 use crate::error::ParseError;
 use crate::values::Values;
-
+/// Trait for Serializing Rust Structs into JSON
 pub trait Serialize {
+    /// This method is used to serialize your struct into a Values Object representing a JSON hierarchy
+    ///
+    /// Example:
+    ///
+    /// ```rust
+    /// //Example Struct to show how this library works
+    /// use wjp::{map, Serialize, Values};
+    /// #[derive(Debug)]
+    /// struct Example {
+    ///     code: f32,
+    ///     messages: Vec<String>,
+    ///     opt: Option<bool>,
+    /// }
+    ///
+    /// // Implementing the Serialize Trait allows you to call the .json() method on your struct
+    /// impl Serialize for Example {
+    ///     fn serialize(&self) -> Values {
+    ///         // The map!() macro is a helper to create a hashmap from the given values
+    ///         Values::Struct(map!(
+    ///             // Many Data Structures and Types already have Serialize implemented
+    ///             ("code", self.code.serialize()),
+    ///             ("messages", self.messages.serialize()),
+    ///             ("opt", self.opt.serialize())
+    ///         ))
+    ///     }
+    /// }
+    /// ```
     fn serialize(&self) -> Values;
-
+    /// This method has a default impl and it is not advised on writing your own impl for your structs
     fn json(&self) -> String {
         self.serialize().to_string()
     }
