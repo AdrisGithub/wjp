@@ -235,7 +235,7 @@ impl Display for Values {
                 }
                 write!(f, "]")
             }
-            Values::Null => write!(f, "{}", NULL),
+            Values::Null => write!(f, "{}", Self::NULL),
             Values::Boolean(bool) => write!(f, "{}", bool),
         }
     }
