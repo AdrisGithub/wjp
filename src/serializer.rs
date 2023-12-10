@@ -34,6 +34,14 @@ pub trait Serialize {
     ///         ))
     ///     }
     /// }
+    /// let example = Example {
+    ///     code: 123.0,
+    ///     messages: vec!["Important".to_string(), "Message".to_string()],
+    ///     opt: None,
+    /// };   
+    /// // After implementing these two traits you can call the .json() method to serialize your struct
+    /// let json = example.json();
+    /// println!("{}", json);
     /// ```
     fn serialize(&self) -> Values;
     /// This method has a default impl and it is not advised on writing your own impl for your structs

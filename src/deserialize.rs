@@ -7,19 +7,39 @@ use crate::values::Values;
 /// and is used to deserialize JSON strings.
 ///
 /// Usage:
-/// ```rust;
-/// use wjp::{Deserialize, ParseError, Values};
-///
-/// impl TryFrom<Values> for bool {
+/// ```
+/// use wjp::{Deserialize, ParseError, SerializeHelper, Values};
+/// // Example Struct to show how this library works
+/// #[derive(Debug)]
+/// struct Example {
+///     code: f32,
+///     messages: Vec<String>,
+///     opt: Option<bool>,
+/// }
+/// // Implementing the TryFrom<Values> Trait allows you to deserialize a JSON String into your struct
+/// impl TryFrom<Values> for Example {
+///     // We advise on using the ParseError because many helper methods build on this error
 ///     type Error = ParseError;
 ///     fn try_from(value: Values) -> Result<Self, Self::Error> {
-///         value.get_bool().ok_or(ParseError::new())
+///         // Now you just need to get your struct / array and get the keys with their appropriate values
+///         let mut struc = value.get_struct().ok_or(ParseError::new())?;
+///         let code = struc.map_val("code", f32::try_from)?;
+///         // Many Data Structures and Types already have TryFrom<Values> implemented
+///         let messages = struc.map_val("messages", Vec::try_from)?;
+///         // This is sadly not the case for Option<T> where your need to find out what the type of T is and parse that
+///         let opt = struc.map_opt_val("opt", |val| val.get_bool())?;
+///         Ok(Self {
+///             opt,
+///             messages,
+///             code,
+///         })
 ///     }
 /// }
 ///
-/// let boolean = "true";
-/// let parsed = bool::deserialize_str(boolean).unwrap();
-/// assert_eq!(parsed,true);
+/// //And the <Your Type>::deserialize(&str/String) to deserialize it
+/// let json = "{\"opt\":null,\"code\":123,\"messages\":[\"Important\",\"Message\"]}";
+/// let back = Example::deserialize_str(json);
+/// println!("{:?}", back);
 /// ```
 /// Info: The [`TryFrom<Values>`] impl needs to have Error = ParseError.
 ///
