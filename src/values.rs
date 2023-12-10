@@ -1,12 +1,6 @@
 use std::collections::HashMap;
 use std::fmt::{Display, Formatter};
 
-pub const STRING: &str = "string";
-pub const STRUCT: &str = "struct";
-pub const NUMBER: &str = "number";
-pub const NULL: &str = "null";
-pub const ARRAY: &str = "array";
-pub const BOOLEAN: &str = "boolean";
 /// Different Enums to construct an abstract JSON Hierarchy which is easier to work with and to construct
 #[derive(Debug, Clone)]
 pub enum Values {
@@ -87,6 +81,12 @@ impl PartialEq<Self> for Values {
 }
 
 impl Values {
+    pub const STRING: &'static str = "string";
+    pub const STRUCT: &'static str = "struct";
+    pub const NUMBER: &'static str = "number";
+    pub const NULL: &'static str = "null";
+    pub const ARRAY: &'static str = "array";
+    pub const BOOLEAN: &'static str = "boolean";
     /// if the provided value is a [`Struct`] it will return [`Some`]
     /// containing the inner [`Hashmap`] otherwise returns [`None`]
     ///
@@ -98,60 +98,109 @@ impl Values {
             _ => None,
         }
     }
+    /// if the provided value is a [`Boolean`] it will return [`Some`]
+    /// containing the inner [`bool`] otherwise returns [`None`]
+    ///
+    /// [`Boolean`]: Values::Boolean
     pub fn get_bool(&self) -> Option<bool> {
         match self {
             Values::Boolean(bool) => Some(*bool),
             _ => None,
         }
     }
+    /// if the provided value is a [`String`] it will return [`Some`]
+    /// containing the inner [`str`] otherwise returns [`None`]
+    ///
+    /// [`String`]: Values::String
+    /// [`str`]: String
     pub fn get_string(&self) -> Option<String> {
         match self {
             Values::String(string) => Some(string.to_string()),
             _ => None,
         }
     }
+    /// if the provided value is a [`Number`] it will return [`Some`]
+    /// containing the inner [`f64`] otherwise returns [`None`]
+    ///
+    /// [`Number`]: Values::Number
     pub fn get_number(&self) -> Option<f64> {
         match self {
             Values::Number(num) => Some(*num),
             _ => None,
         }
     }
+    /// if the provided value is a [`Array`] it will return [`Some`]
+    /// containing the inner [`Vec<Values>`] otherwise returns [`None`]
+    ///
+    /// [`Array`]: Values::Array
     pub fn get_list_opt(&self) -> Option<Vec<Values>> {
         match self {
             Values::Array(arr) => Some(arr.to_vec()),
             _ => None,
         }
     }
+    /// if the provided value is a [`Array`] it will return it
+    /// otherwise an empty Vec
+    ///
+    /// [`Array`]: Values::Array
     pub fn get_list(&self) -> Vec<Values> {
         self.get_list_opt().unwrap_or_default()
     }
+    /// get the Type of this [`Values`] Object as a String
+    /// It could be:
+    ///     [`STRING`], [`NUMBER`], [`STRUCT`], [`NULL`], [`ARRAY`] or [`BOOLEAN`]
+    ///
+    ///[`STRING`]: Self::STRING
+    ///[`NUMBER`]: Self::NUMBER
+    ///[`STRUCT`]: Self::STRUCT
+    ///[`NULL`]: Self::NULL
+    ///[`ARRAY`]: Self::ARRAY
+    ///[`BOOLEAN`]: Self::BOOLEAN
     pub fn get_type_as_string(&self) -> &str {
         match self {
-            Values::String(_) => STRING,
-            Values::Number(_) => NUMBER,
-            Values::Struct(_) => STRUCT,
-            Values::Null => NULL,
-            Values::Array(_) => ARRAY,
-            Values::Boolean(_) => BOOLEAN,
+            Values::String(_) => Self::STRING,
+            Values::Number(_) => Self::NUMBER,
+            Values::Struct(_) => Self::STRUCT,
+            Values::Null => Self::NULL,
+            Values::Array(_) => Self::ARRAY,
+            Values::Boolean(_) => Self::BOOLEAN,
         }
     }
+    /// returns true if the provided Value is [`Boolean`]
+    ///
+    /// [`Boolean`]: Values::Boolean
     pub fn is_bool(&self) -> bool {
-        self.get_type_as_string().eq(BOOLEAN)
+        self.get_type_as_string().eq(Self::BOOLEAN)
     }
+    /// returns true if the provided Value is [`Null`]
+    ///
+    /// [`Null`]: Values::Null
     pub fn is_null(&self) -> bool {
-        self.get_type_as_string().eq(NULL)
+        self.get_type_as_string().eq(Self::NULL)
     }
+    /// returns true if the provided Value is [`String`]
+    ///
+    /// [`String`]: Values::String
     pub fn is_string(&self) -> bool {
-        self.get_type_as_string().eq(STRING)
+        self.get_type_as_string().eq(Self::STRING)
     }
+    /// returns true if the provided Value is [`Number`]
+    ///
+    /// [`Number`]: Values::Number
     pub fn is_number(&self) -> bool {
-        self.get_type_as_string().eq(NUMBER)
+        self.get_type_as_string().eq(Self::NUMBER)
     }
+    /// returns true if the provided Value is [`Struct`]
+    ///
+    /// [`Struct`]: Values::Struct
     pub fn is_struct(&self) -> bool {
-        self.get_type_as_string().eq(STRUCT)
+        self.get_type_as_string().eq(Self::STRUCT)
     }
+    /// returns true if the provided Value is [`Array`]
+    ///
+    /// [`Array`]: Values::Array
     pub fn is_array(&self) -> bool {
-        self.get_type_as_string().eq(ARRAY)
+        self.get_type_as_string().eq(Self::ARRAY)
     }
 }
 
