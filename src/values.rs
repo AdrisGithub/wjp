@@ -207,7 +207,11 @@ impl Values {
 impl Display for Values {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            Values::String(string) => write!(f, "\"{}\"", string),
+            Values::String(string) => write!(
+                f,
+                "\"{}\"",
+                string.replace('\\', "\\\\").replace('\"', "\\\"")
+            ),
             Values::Number(number) => write!(f, "{}", number),
             Values::Struct(r#struct) => {
                 write!(f, "{{")?;
@@ -318,12 +322,12 @@ mod tests {
                 hello: String::from("IDK"),
             },
             Hello {
-                hello: String::from("Hello"),
+                hello: String::from("Hel\"lo"),
             },
         ];
         assert_eq!(
             arr.serialize().to_string(),
-            "[{\"hello\":\"Moin\"},{\"hello\":\"IDK\"},{\"hello\":\"Hello\"}]"
+            "[{\"hello\":\"Moin\"},{\"hello\":\"IDK\"},{\"hello\":\"Hel\\\"lo\"}]"
         );
     }
 }
