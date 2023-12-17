@@ -207,11 +207,7 @@ impl Values {
 impl Display for Values {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            Values::String(string) => write!(
-                f,
-                "\"{}\"",
-                string.replace('\\', "\\\\").replace('\"', "\\\"")
-            ),
+            Values::String(string) => write!(f, "\"{}\"", string.replace('"', "\\\"")),
             Values::Number(number) => write!(f, "{}", number),
             Values::Struct(r#struct) => {
                 write!(f, "{{")?;
