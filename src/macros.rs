@@ -26,7 +26,7 @@ macro_rules! map (
         {
             let mut m = std::collections::HashMap::with_capacity(3);
             $(
-                m.insert(String::from($key), crate::Serialize::serialize($value));
+                m.insert(String::from($key), Serialize::serialize($value));
              )+
             m
         }
