@@ -26,7 +26,7 @@ macro_rules! map (
         {
             let mut m = std::collections::HashMap::with_capacity(3);
             $(
-                m.insert(String::from($key), $value);
+                m.insert(String::from($key), crate::Serialize::serialize($value));
              )+
             m
         }
@@ -36,6 +36,8 @@ macro_rules! map (
 #[cfg(test)]
 mod tests {
     use std::collections::HashMap;
+    use crate::Serialize;
+
     #[test]
     pub fn with_empty_params() {
         assert_eq!(map!(), HashMap::<&str, &str>::new())
@@ -43,7 +45,7 @@ mod tests {
     #[test]
     pub fn with_filled_params() {
         let mut map = HashMap::new();
-        map.insert(String::from("test"), 123);
-        assert_eq!(map!(("test", 123)), map)
+        map.insert(String::from("test"), 123.serialize());
+        assert_eq!(map!(("test", &123)), map)
     }
 }

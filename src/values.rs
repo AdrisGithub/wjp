@@ -1,6 +1,8 @@
 use std::collections::HashMap;
 use std::fmt::{Display, Formatter};
 
+use crate::Serialize;
+
 /// Different Enums to construct an abstract JSON Hierarchy which is easier to work with and to construct
 #[derive(Debug, Clone)]
 pub enum Values {
@@ -62,6 +64,12 @@ pub enum Values {
     /// )
     /// ```
     Boolean(bool),
+}
+
+impl Serialize for Values {
+    fn serialize(&self) -> Values {
+        self.clone()
+    }
 }
 
 impl PartialEq<Self> for Values {
@@ -291,15 +299,16 @@ mod tests {
         }
         impl Serialize for Hello {
             fn serialize(&self) -> Values {
-                Values::Struct(map!(("hello", self.hello.serialize())))
+                Values::Struct(map!(("hello", &self.hello)))
             }
         }
         let struc = Hello {
             hello: String::from("Moin"),
         }
-        .serialize();
+            .serialize();
         assert_eq!(struc.to_string(), "{\"hello\":\"Moin\"}");
     }
+
     #[test]
     pub fn display_on_arr_with_struct() {
         struct Hello {
@@ -307,7 +316,7 @@ mod tests {
         }
         impl Serialize for Hello {
             fn serialize(&self) -> Values {
-                Values::Struct(map!(("hello", self.hello.serialize())))
+                Values::Struct(map!(("hello", &self.hello)))
             }
         }
         let arr = vec![

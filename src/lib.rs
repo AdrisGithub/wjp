@@ -15,7 +15,7 @@
 //!         // The map!() macro is a helper to create a hashmap from the given values
 //!         Values::Struct(map!(
 //!             // Many Data Structures and Types already have Serialize implemented
-//!             ("code", self.code.serialize()),
+//!             ("code", &self.code),
 //!             ("messages", self.messages.serialize()),
 //!             ("opt", self.opt.serialize())
 //!         ))

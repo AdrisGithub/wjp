@@ -18,9 +18,7 @@ mod tests {
 
     impl Serialize for S {
         fn serialize(&self) -> Values {
-            let first = self.a.serialize();
-            let second = self.b.serialize();
-            Values::Struct(map!(("a", first), ("b", second)))
+            Values::Struct(map!(("a", &self.a), ("b", &self.b)))
         }
     }
 
@@ -52,7 +50,7 @@ mod tests {
 
     impl Serialize for A {
         fn serialize(&self) -> Values {
-            Values::Struct(map!(("a", self.a.serialize()), ("s", self.s.serialize())))
+            Values::Struct(map!(("a", &self.a), ("s", &self.s)))
         }
     }
 
@@ -78,7 +76,7 @@ mod tests {
 
     #[test]
     fn test_one() {
-        let map = map!(("a", 1), ("a", 1));
+        let map = map!(("a", &1), ("a", &1));
         println!("{:?}", map.get("a"));
     }
 
