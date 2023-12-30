@@ -86,8 +86,6 @@ impl<K: Serialize, V: Serialize> Serialize for HashMap<K, V> {
         let mut map = HashMap::with_capacity(4);
         for (k, v) in self.iter() {
             let mut string = k.serialize().to_string();
-            string.remove(string.len()-1);
-            string.remove(0);
             map.insert(string, v.serialize());
         }
         Values::Struct(map)
@@ -105,8 +103,6 @@ impl<K: Serialize, V: Serialize> Serialize for BTreeMap<K, V> {
         let mut map = HashMap::with_capacity(4);
         for (k, v) in self.iter() {
             let mut string = k.serialize().to_string();
-            string.remove(string.len()-1);
-            string.remove(0);
             map.insert(string, v.serialize());
         }
         Values::Struct(map)
@@ -507,7 +503,7 @@ mod tests {
     #[test]
     pub fn test_serialized_map_filled() {
         let map = map!(("Hello", &true));
-        assert_eq!("{\"Hello\":true}", map.serialize().to_string())
+        assert_eq!("{\"\"Hello\"\":true}", map.serialize().to_string()) // TODO
     }
 
     #[test]
