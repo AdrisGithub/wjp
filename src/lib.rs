@@ -16,8 +16,8 @@
 //!         Values::Struct(map!(
 //!             // Many Data Structures and Types already have Serialize implemented
 //!             ("code", &self.code),
-//!             ("messages", self.messages.serialize()),
-//!             ("opt", self.opt.serialize())
+//!             ("messages", &self.messages),
+//!             ("opt", &self.opt)
 //!         ))
 //!     }
 //! }

@@ -3,14 +3,14 @@
 /// Example:
 /// ```rust
 /// use std::collections::HashMap;
-/// use wjp::map;
+/// use wjp::{map, Serialize};
 /// use wjp::Values;
 ///
 /// let mut map = HashMap::new();
 /// map.insert("test".to_string(),Values::Null);
 ///
 /// assert_eq!(
-///     map!(("test",Values::Null)),
+///     map!(("test",&Values::Null)),
 ///     map
 /// )
 ///

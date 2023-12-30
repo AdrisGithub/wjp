@@ -6,6 +6,7 @@ use std::str::FromStr;
 use crate::deserialize::Deserialize;
 use crate::error::ParseError;
 use crate::values::Values;
+
 /// Trait for Serializing Rust Structs into JSON
 pub trait Serialize {
     /// This method is used to serialize your struct into a Values Object representing a JSON hierarchy
@@ -28,9 +29,9 @@ pub trait Serialize {
     ///         // The map!() macro is a helper to create a hashmap from the given values
     ///         Values::Struct(map!(
     ///             // Many Data Structures and Types already have Serialize implemented
-    ///             ("code", self.code.serialize()),
-    ///             ("messages", self.messages.serialize()),
-    ///             ("opt", self.opt.serialize())
+    ///             ("code", &self.code),
+    ///             ("messages", &self.messages),
+    ///             ("opt", &self.opt)
     ///         ))
     ///     }
     /// }
@@ -80,11 +81,14 @@ impl<T: Serialize> Serialize for &[T] {
     }
 }
 
-impl<K: ToString, V: Serialize> Serialize for HashMap<K, V> {
+impl<K: Serialize, V: Serialize> Serialize for HashMap<K, V> {
     fn serialize(&self) -> Values {
         let mut map = HashMap::with_capacity(4);
         for (k, v) in self.iter() {
-            map.insert(k.to_string(), v.serialize());
+            let mut string = k.serialize().to_string();
+            string.remove(string.len()-1);
+            string.remove(0);
+            map.insert(string, v.serialize());
         }
         Values::Struct(map)
     }
@@ -96,11 +100,14 @@ impl<I: Serialize> Serialize for HashSet<I> {
     }
 }
 
-impl<K: ToString, V: Serialize> Serialize for BTreeMap<K, V> {
+impl<K: Serialize, V: Serialize> Serialize for BTreeMap<K, V> {
     fn serialize(&self) -> Values {
         let mut map = HashMap::with_capacity(4);
         for (k, v) in self.iter() {
-            map.insert(k.to_string(), v.serialize());
+            let mut string = k.serialize().to_string();
+            string.remove(string.len()-1);
+            string.remove(0);
+            map.insert(string, v.serialize());
         }
         Values::Struct(map)
     }
@@ -261,6 +268,7 @@ impl TryFrom<Values> for f32 {
         f64::try_from(value).map(|val| val as f32)
     }
 }
+
 impl TryFrom<Values> for f64 {
     type Error = ParseError;
     fn try_from(value: Values) -> Result<Self, Self::Error> {
@@ -387,24 +395,24 @@ impl TryFrom<Values> for bool {
 }
 
 impl<K, V> TryFrom<Values> for HashMap<K, V>
-where
-    K: TryFrom<Values, Error = ParseError> + Eq + Hash,
-    V: TryFrom<Values, Error = ParseError>,
+    where
+        K: TryFrom<Values, Error=ParseError> + Eq + Hash,
+        V: TryFrom<Values, Error=ParseError>,
 {
     type Error = ParseError;
     fn try_from(value: Values) -> Result<Self, Self::Error> {
         let mut map = HashMap::new();
         for (key, value) in value.get_struct().ok_or(ParseError::new())? {
-            map.insert(Deserialize::deserialize(key)?, V::try_from(value)?);
+            map.insert(K::deserialize_str(key.as_str())?, V::try_from(value)?);
         }
         Ok(map)
     }
 }
 
 impl<K, V> TryFrom<Values> for BTreeMap<K, V>
-where
-    K: TryFrom<Values, Error = ParseError> + Eq + Hash + Ord,
-    V: TryFrom<Values, Error = ParseError>,
+    where
+        K: TryFrom<Values, Error=ParseError> + Eq + Hash + Ord,
+        V: TryFrom<Values, Error=ParseError>,
 {
     type Error = ParseError;
     fn try_from(value: Values) -> Result<Self, Self::Error> {
@@ -417,8 +425,8 @@ where
 }
 
 impl<V> TryFrom<Values> for BTreeSet<V>
-where
-    V: TryFrom<Values, Error = ParseError> + Ord,
+    where
+        V: TryFrom<Values, Error=ParseError> + Ord,
 {
     type Error = ParseError;
     fn try_from(value: Values) -> Result<Self, Self::Error> {
@@ -432,8 +440,8 @@ where
 }
 
 impl<V> TryFrom<Values> for HashSet<V>
-where
-    V: TryFrom<Values, Error = ParseError> + Hash + Eq,
+    where
+        V: TryFrom<Values, Error=ParseError> + Hash + Eq,
 {
     type Error = ParseError;
     fn try_from(value: Values) -> Result<Self, Self::Error> {
@@ -449,8 +457,9 @@ where
 #[cfg(test)]
 mod tests {
     use std::collections::HashMap;
+    use std::fmt::Display;
 
-    use crate::map;
+    use crate::{Deserialize, map, ParseError, SerializeHelper, Values};
     use crate::serializer::Serialize;
 
     #[test]
@@ -458,39 +467,80 @@ mod tests {
         let none: Option<bool> = None;
         assert_eq!("null", none.serialize().to_string());
     }
+
     #[test]
     pub fn test_serialized_option_some() {
         let some = Some(true);
         assert_eq!("true", some.serialize().to_string());
     }
+
     #[test]
     pub fn test_serialized_result_err() {
         let string: Result<&str, &str> = Err("Hello I am a Error");
         assert_eq!("\"Hello I am a Error\"", string.serialize().to_string())
     }
+
     #[test]
     pub fn test_serialized_result_ok() {
         let num: Result<f64, &str> = Ok(123.22);
         assert_eq!("123.22", num.serialize().to_string())
     }
+
     #[test]
     pub fn test_serialized_vec_empty() {
         let arr: Vec<bool> = vec![];
         assert_eq!("[]", arr.serialize().to_string())
     }
+
     #[test]
     pub fn test_serialized_vec_filled() {
         let arr = vec![true, false, false, false];
         assert_eq!("[true,false,false,false]", arr.serialize().to_string())
     }
+
     #[test]
     pub fn test_serialized_map_empty() {
         let map: HashMap<String, String> = map!();
         assert_eq!("{}", map.serialize().to_string())
     }
+
     #[test]
     pub fn test_serialized_map_filled() {
         let map = map!(("Hello", &true));
         assert_eq!("{\"Hello\":true}", map.serialize().to_string())
+    }
+
+    #[test]
+    pub fn test_serialized_map_filled_s() {
+        #[derive(Hash, Eq, PartialEq, Debug)]
+        struct IDK {
+            map: u128,
+        }
+        impl Display for IDK {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                write!(f, "{}", self.json())
+            }
+        }
+        impl TryFrom<Values> for IDK {
+            type Error = ParseError;
+            fn try_from(value: Values) -> Result<Self, Self::Error> {
+                let mut struc = value.get_struct().ok_or(ParseError::new())?;
+                Ok(Self {
+                    map: struc.map_val("map", u128::try_from)?
+                })
+            }
+        }
+        impl Serialize for IDK {
+            fn serialize(&self) -> Values {
+                Values::Struct(map!(("map",&self.map)))
+            }
+        }
+
+        let mut map = HashMap::new();
+        map.insert(100u8, IDK { map: 1 });
+        let ser = map.json();
+        println!("{}", ser);
+        let back = HashMap::<u8, IDK>::deserialize(ser);
+        println!("{:?}", back);
     }
 }

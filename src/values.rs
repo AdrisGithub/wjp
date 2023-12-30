@@ -27,8 +27,9 @@ pub enum Values {
     /// Represents a JSON Struct
     /// ```
     /// use wjp::{map, Values};
+    /// use wjp::Serialize;
     /// assert_eq!(
-    ///     Values::Struct(map!(("message",Values::Null))).to_string(),
+    ///     Values::Struct(map!(("message",&Values::Null))).to_string(),
     ///     "{\"message\":null}"
     /// )
     /// ```
