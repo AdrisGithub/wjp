@@ -275,6 +275,8 @@ impl<'a> Parser {
         loop {
             if !self.is_eof() {
                 num = self.read_byte();
+            }else {
+                return f64::from_str(string.as_str()).map_err(|_err| ());
             }
             match num {
                 b'\\' | b' ' | b',' | b']' | b'}' | b'\n' | b'\r' => break,
@@ -289,7 +291,7 @@ impl<'a> Parser {
     }
 
     fn is_eof(&self) -> bool {
-        self.index == self.length
+        self.index >= self.length
     }
 
     fn read_byte(&self) -> u8 {
