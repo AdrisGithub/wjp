@@ -85,8 +85,7 @@ impl<K: Serialize, V: Serialize> Serialize for HashMap<K, V> {
     fn serialize(&self) -> Values {
         let mut map = HashMap::with_capacity(4);
         for (k, v) in self.iter() {
-            let mut string = k.serialize().to_string();
-            map.insert(string, v.serialize());
+            map.insert(k.serialize().to_string(), v.serialize());
         }
         Values::Struct(map)
     }
@@ -102,8 +101,7 @@ impl<K: Serialize, V: Serialize> Serialize for BTreeMap<K, V> {
     fn serialize(&self) -> Values {
         let mut map = HashMap::with_capacity(4);
         for (k, v) in self.iter() {
-            let mut string = k.serialize().to_string();
-            map.insert(string, v.serialize());
+            map.insert(k.serialize().to_string(), v.serialize());
         }
         Values::Struct(map)
     }
