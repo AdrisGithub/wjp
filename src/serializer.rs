@@ -503,7 +503,7 @@ mod tests {
     #[test]
     pub fn test_serialized_map_filled() {
         let map = map!(("Hello", &true));
-        assert_eq!("{\"\"Hello\"\":true}", map.serialize().to_string()) // TODO
+        assert_eq!("{\"\"Hello\"\":true}", map.serialize().to_string())
     }
 
     #[test]
