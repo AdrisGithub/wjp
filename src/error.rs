@@ -1,6 +1,7 @@
 use std::fmt::{Debug, Error, Formatter};
 
 /// Error Struct that contains different Information's on what went wrong
+#[derive(Eq,PartialOrd, PartialEq,Hash)]
 pub struct ParseError(String);
 
 impl ParseError {
