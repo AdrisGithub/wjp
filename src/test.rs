@@ -173,7 +173,7 @@ mod tests {
         ]);
         let ser_mom = mum.serialize().to_string();
         println!("{}", ser_mom);
-        println!("{:?}", YourMum::deserialize(ser_mom));
+        println!("{:?}", YourMum::deserialize_str(ser_mom.as_str()));
         let contents = String::from("{\"ab\":\"c\\\"d\\\"e\"}");
         println!("{:?}", Parser::new(contents.as_str()).parse());
         let hello = String::from("Hello");
