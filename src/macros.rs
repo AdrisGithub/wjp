@@ -35,8 +35,8 @@ macro_rules! map (
 
 #[cfg(test)]
 mod tests {
-    use std::collections::HashMap;
     use crate::Serialize;
+    use std::collections::HashMap;
 
     #[test]
     pub fn with_empty_params() {
