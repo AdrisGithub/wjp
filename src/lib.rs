@@ -67,7 +67,9 @@ pub use error::ParseError;
 pub use helper::SerializeHelper;
 pub use serializer::Serialize;
 pub use values::Values;
-
+pub const NULL: Values = Values::Null;
+pub const TRUE: Values = Values::Boolean(true);
+pub const FALSE: Values = Values::Boolean(false);
 mod deserialize;
 mod error;
 mod helper;
