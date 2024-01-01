@@ -47,10 +47,6 @@ use crate::values::Values;
 ///
 /// [`TryFrom<Values>`]: TryFrom
 pub trait Deserialize: TryFrom<Values, Error = ParseError> {
-    /// deserialize a [`String`] containing JSON into the provided Struct
-    fn deserialize(str: String) -> Result<Self, ParseError> {
-        Self::deserialize_str(str.as_str())
-    }
     /// deserialize a &str containing JSON into the provided Struct
     fn deserialize_str(str: &str) -> Result<Self, ParseError> {
         Parser::new(str).parse().map(Self::try_from)?
