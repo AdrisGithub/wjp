@@ -4,7 +4,7 @@ use std::fmt::{Display, Formatter};
 use crate::Serialize;
 
 /// Different Enums to construct an abstract JSON Hierarchy which is easier to work with and to construct
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub enum Values {
     /// Represents a JSON String
     /// ```
@@ -51,6 +51,7 @@ pub enum Values {
     ///     "null"
     /// );
     /// ```
+    #[default]
     Null,
     /// Represents the JSON Value "true" or "false"
     /// ```
@@ -252,25 +253,25 @@ impl Display for Values {
 
 #[cfg(test)]
 mod tests {
-    use crate::map;
     use crate::serializer::Serialize;
     use crate::values::Values;
+    use crate::{map, FALSE, NULL, TRUE};
 
     #[test]
     pub fn display_on_bool_true() {
-        let bool = Values::Boolean(true);
+        let bool = TRUE;
         assert_eq!(bool.to_string(), "true")
     }
 
     #[test]
     pub fn display_on_bool_false() {
-        let bool = Values::Boolean(false);
+        let bool = FALSE;
         assert_eq!(bool.to_string(), "false")
     }
 
     #[test]
     pub fn display_on_null() {
-        let null = Values::Null;
+        let null = NULL;
         assert_eq!(null.to_string(), "null")
     }
 
@@ -306,7 +307,7 @@ mod tests {
         let struc = Hello {
             hello: String::from("Moin"),
         }
-            .serialize();
+        .serialize();
         assert_eq!(struc.to_string(), "{\"hello\":\"Moin\"}");
     }
 
