@@ -3,6 +3,7 @@ use std::str::FromStr;
 
 use crate::error::ParseError;
 use crate::values::Values;
+use crate::{FALSE, NULL, TRUE};
 
 #[macro_use]
 pub(crate) mod macros {
@@ -138,7 +139,7 @@ impl<'a> Parser {
                             return self.unexpected_character();
                         }
                         let index = self.expect_string()?;
-                        map.insert(index.clone(), Values::Null);
+                        map.insert(index.clone(), NULL);
                         expect!(self, b':');
                         stack.push(StackBlock(Values::Struct(map), index));
 
@@ -160,15 +161,15 @@ impl<'a> Parser {
                 }
                 b't' => {
                     expect_sequence!(self, b'r', b'u', b'e');
-                    Values::Boolean(true)
+                    TRUE
                 }
                 b'f' => {
                     expect_sequence!(self, b'a', b'l', b's', b'e');
-                    Values::Boolean(false)
+                    FALSE
                 }
                 b'n' => {
                     expect_sequence!(self, b'u', b'l', b'l');
-                    Values::Null
+                    NULL
                 }
                 _ => return self.unexpected_character(),
             };
@@ -275,7 +276,7 @@ impl<'a> Parser {
         loop {
             if !self.is_eof() {
                 num = self.read_byte();
-            }else {
+            } else {
                 return f64::from_str(string.as_str()).map_err(|_err| ());
             }
             match num {
