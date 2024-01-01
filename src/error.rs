@@ -1,7 +1,7 @@
 use std::fmt::{Debug, Error, Formatter};
 
 /// Error Struct that contains different Information's on what went wrong
-#[derive(Eq,PartialOrd, PartialEq,Hash)]
+#[derive(Eq, PartialOrd, PartialEq, Hash, Clone, Default, Ord)]
 pub struct ParseError(String);
 
 impl ParseError {
@@ -10,8 +10,9 @@ impl ParseError {
         Self(String::new())
     }
     /// replaces the Error Message with a provided Message
-    pub fn with_msg(&mut self, msg: &str) {
+    pub fn with_msg(mut self, msg: &str) -> Self {
         self.0 = String::from(msg);
+        self
     }
 }
 
